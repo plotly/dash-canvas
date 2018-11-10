@@ -17,7 +17,8 @@
     "dependencies": {
         "ramda": "^0.25.0",
         "react": "15.4.2",
-        "react-dom": "15.4.2"
+        "react-dom": "15.4.2",
+	"react-sketch": ">=0.4.4"
     },
     "devDependencies": {
         "babel-core": "^6.26.3",
