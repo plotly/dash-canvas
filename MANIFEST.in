@@ -1,0 +1,5 @@
+include dash_canvas/dash_canvas.min.js
+include dash_canvas/dash_canvas.dev.js
+include dash_canvas/metadata.json
+include dash_canvas/package.json
+include README.md
