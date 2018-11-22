@@ -6,7 +6,9 @@ from dash.dependencies import Input, Output
 import dash_html_components as html
 import dash_core_components as dcc
 from parse_json import parse_jsonstring
+from image_processing_utils import watershed_segmentation
 from skimage import io
+import plotly.graph_objs as go
 
 filename = 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Mitochondria%2C_mammalian_lung_-_TEM_%282%29.jpg'
 img = io.imread(filename, as_gray=True)
@@ -18,9 +20,14 @@ app.scripts.config.serve_locally = True
 app.css.config.serve_locally = True
 
 app.layout = html.Div([
+    html.H1(children='Image segmentation tool'),
+
+    html.Div(children='''
+        Paint on each object you want to segment \n, 
+	then press the Save button to trigger the segmentation.
+    '''),
     dash_canvas.DashCanvas(
         id='canvas',
-        value=10,
         label='my-label',
         width=width,
 	height=height,
@@ -50,8 +57,45 @@ app.layout = html.Div([
     value='',
     id='filename'
     ),
-    html.Div(id='output')
+    html.Div(id='output'),
+    dcc.Graph(
+        id='segmentation',
+	figure={
+            'data': [
+                go.Heatmap(
+                    z=img, colorscale='Greys'
+                    )
+                ],
+            'layout': dict(width=width, height=height,
+                yaxis=dict(autorange='reversed'))
+            }
+
+	)
+
 ])
+
+
+@app.callback(Output('segmentation', 'figure'), [Input('canvas', 'json_data')])
+def update_figure(string):
+    print(string)
+    mask = parse_jsonstring(string, shape=(height, width))
+    seg = watershed_segmentation(img, mask)
+    return {'data': [
+                go.Heatmap(
+                    z=img, colorscale='Greys'
+                    ),
+                go.Contour(
+                    z=seg,
+                    contours=dict(
+                                coloring='lines',)
+                )
+                ],
+            'layout': dict(width=width, height=height, yaxis=dict(
+                                            autorange='reversed'))
+
+    }
+ 
+
 
 @app.callback(Output('filename', 'value'), [Input('canvas', 'json_data')])
 def display_output(string):
@@ -65,15 +109,10 @@ def upload_image(string):
     return string
 
 
-"""
-@app.callback(Output('canvas', 'lineColor'), [Input('filename', 'value')])
-def change_background(value):
-    colors = ['red', 'black', 'blue', 'green']
-    print(value)
-    i = np.random.randint(0, 4)
-    col = colors[i]
-    return col
-"""
+app.css.append_css({
+    'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
+})
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)

@@ -13,19 +13,9 @@ export default class DashCanvas extends Component {
     this.state = {
         lineColor: 'black',
         lineWidth: 30,
-        fillColor: '#68CCCA',
-        backgroundColor: 'transparent',
         shadowWidth: 0,
         shadowOffset: 0,
-        tool: Tools.Line,
-        fillWithColor: false,
-        fillWithBackgroundColor: false,
         drawings: [],
-        canUndo: false,
-        canRedo: false,
-        controlledSize: false,
-        sketchWidth: 600,
-        sketchHeight: 600,
         stretched: false,
         stretchedX: false,
         stretchedY: false,
@@ -34,8 +24,6 @@ export default class DashCanvas extends Component {
     };
     this._save = this._save.bind(this);
     this._undo = this._undo.bind(this);
-    this._resize = this._resize.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
   } 
 
 
@@ -67,24 +55,6 @@ export default class DashCanvas extends Component {
     };
 
 
-    _addImg() {
-	let sketch = this._sketch;
-        let {stretched, stretchedX, stretchedY, originX, originY} = this.state;
-        sketch.setBackgroundFromDataUrl(this.props.filename, {
-                stretched: stretched,
-                stretchedX: stretchedX,
-                stretchedY: stretchedY,
-                originX: originX,
-                originY: originY
-            });
-
-    };
-
-    _resize(e) {
-    this.setState({controlledSize: !this.state.controlledSize});
-    };
-
-
     _undo(){
         this._sketch.undo();
         this.setState({
@@ -93,12 +63,6 @@ export default class DashCanvas extends Component {
         })
     };
 
-
-    handleInputChange(e) {
-      const newValue = e.target.value;
-      this.props.setProps({value: newValue});
-      this._sketch.setProps({lineColor: 'green'});
-    };
 
     render() {
 	let value;
@@ -109,7 +73,6 @@ export default class DashCanvas extends Component {
       }
         return (
 		<div>
-	   	<h1> Oh Oh </h1>
 	    	<SketchField name='sketch'
                          ref={(c) => this._sketch = c}
                          tool={Tools.Pencil}
@@ -117,14 +80,8 @@ export default class DashCanvas extends Component {
 			 width={this.props.width}
 			 height={this.props.height}
                          lineWidth={this.state.lineWidth}/>
-			<button 
-		       onClick={(e, v) => this._resize(e, v)}> Resize </button>
-			<button 
-		       onClick={(e) => this._undo()}> Undo </button>
-			<button
-		       onClick={(e) => this._addImg()}> Image </button>
-			<button
-		       onClick={(e) => this._save()}> Save </button>
+		       <button onClick={(e) => this._undo()}> Undo </button>
+		       <button onClick={(e) => this._save()}> Save </button>
 		</div>
 	    
 
@@ -134,7 +91,7 @@ export default class DashCanvas extends Component {
 
 }
 
-DashCanvas.defaultProps = {filename:'camera.png', value:'bla', 
+DashCanvas.defaultProps = {filename:'camera.png', 
 			   json_data:'', image_content:'',
 			   width:500, height:500};
 
@@ -144,22 +101,14 @@ DashCanvas.propTypes = {
      */
     id: PropTypes.string,
 
+
     /**
      * A label that will be printed when this component is rendered.
      */
     label: PropTypes.string.isRequired,
 
     /**
-     * The value displayed in the input
-     */
-    value: PropTypes.string,
-    /**
-     * the color of the line
-     */
-    lineColor: PropTypes.string,
-
-    /**
-     * The value displayed in the input
+     * Image data
      */
     image_content: PropTypes.string,
  
@@ -173,16 +122,13 @@ DashCanvas.propTypes = {
      */
     height: PropTypes.number,
  
-
-
-
     /**
-     * The value displayed in the input
+     * Name of image file to load
      */
     filename: PropTypes.string,
     
     /**
-     * The value displayed in the input
+     * Sketch content as JSON string
      */
     json_data: PropTypes.string,
     
