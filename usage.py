@@ -20,12 +20,14 @@ app.scripts.config.serve_locally = True
 app.css.config.serve_locally = True
 
 app.layout = html.Div([
-    html.H1(children='Image segmentation tool'),
+       html.Div([
+     html.H1(children='Image segmentation tool'),
 
-    html.Div(children='''
-        Paint on each object you want to segment \n, 
+    dcc.Markdown('''
+        Paint on each object you want to segment
 	then press the Save button to trigger the segmentation.
     '''),
+
     dash_canvas.DashCanvas(
         id='canvas',
         label='my-label',
@@ -49,15 +51,11 @@ app.layout = html.Div([
 		'textAlign': 'center'
 	    },
 	    accept='image/*'
-	),
+	)
+    ]),
 
-    dcc.Input(
-    placeholder='Enter a value...',
-    type='text',
-    value='',
-    id='filename'
-    ),
-    html.Div(id='output'),
+    html.Div([
+    html.H1(children='Segmentation result'),
     dcc.Graph(
         id='segmentation',
 	figure={
@@ -71,8 +69,9 @@ app.layout = html.Div([
             }
 
 	)
+	])],# Div
 
-])
+	className='row')
 
 
 @app.callback(Output('segmentation', 'figure'), [Input('canvas', 'json_data')])
