@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {SketchField, Tools} from 'react-sketch';
-import DropZone from 'react-dropzone';
 
 
 /**
- * DashCanvas is an example component.
+ * A canvas component for drawing on a background image and selecting
+ * regions.
  */
 export default class DashCanvas extends Component {
     constructor(props) {
