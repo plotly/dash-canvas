@@ -97,14 +97,9 @@ def update_figure(string):
  
 
 
-@app.callback(Output('filename', 'value'), [Input('canvas', 'json_data')])
-def display_output(string):
-    fp = open('data.json', 'w')
-    json.dump(string, fp)
-    fp.close()
-    return None
 
-@app.callback(Output('canvas', 'image_content'), [Input('upload-image', 'contents')])
+@app.callback(Output('canvas', 'image_content'), 
+	      [Input('upload-image', 'contents')])
 def upload_image(string):
     return string
 
