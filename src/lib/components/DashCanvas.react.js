@@ -81,6 +81,7 @@ export default class DashCanvas extends Component {
 			 height={this.props.height}
                          lineWidth={this.state.lineWidth}/>
 		       <button onClick={(e) => this._undo()}> Undo </button>
+		       <button onClick={(e) => this._sketch.zoom(1.25)}> Zoom </button>
 		       <button onClick={(e) => this._save()}> Save </button>
 		</div>
 	    
