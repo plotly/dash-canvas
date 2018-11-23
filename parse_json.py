@@ -5,6 +5,26 @@ from scipy import ndimage
 
 
 def _indices_of_path(path):
+    """
+    Retrieve pixel indices (integer values). 
+
+    Parameters
+    ----------
+
+    path: SVG-like path formatted as JSON string
+        The path is formatted like
+        ['M', x0, y0],
+        ['Q', xc1, yc1, xe1, ye1],
+        ['Q', xc2, yc2, xe2, ye2],
+        ...
+        ['L', xn, yn]
+        where (xc, yc) are for control points and (xe, ye) for end points.
+
+    Notes
+    -----
+
+    I took a weight of 1 and it seems fine from visual inspection.
+    """
     rr, cc = [], []
     for (Q1, Q2) in zip(path[:-2], path[1:-1]):
         inds = draw.bezier_curve(int(Q1[-1]), int(Q1[-2]), 
@@ -19,6 +39,8 @@ def parse_jsonstring(string, shape=None):
     """
     Parse JSON string to draw the path saved by react-sketch.
 
+    Up to now only path objects are processed (created with Pencil tool).
+
     Parameters
     ----------
 
@@ -26,6 +48,12 @@ def parse_jsonstring(string, shape=None):
         JSON string of data
     shape: tuple, optional
         shape of returned image.
+
+    Returns
+    -------
+
+    mask: ndarray of bools
+        binary array where the painted regions are one.
     """
     if shape is None:
         shape = (500, 500)
