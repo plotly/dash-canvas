@@ -1,0 +1,263 @@
+{
+  "src/lib/components/DashCanvas.react.js": {
+    "description": "A canvas component for drawing on a background image and selecting\nregions.",
+    "displayName": "DashCanvas",
+    "methods": [
+      {
+        "name": "_save",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "_undo",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      }
+    ],
+    "props": {
+      "id": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The ID used to identify this component in Dash callbacks"
+      },
+      "label": {
+        "type": {
+          "name": "string"
+        },
+        "required": true,
+        "description": "A label that will be printed when this component is rendered."
+      },
+      "image_content": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "Image data",
+        "defaultValue": {
+          "value": "''",
+          "computed": false
+        }
+      },
+      "width": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The width of the canvas",
+        "defaultValue": {
+          "value": "500",
+          "computed": false
+        }
+      },
+      "height": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The height of the canvas",
+        "defaultValue": {
+          "value": "500",
+          "computed": false
+        }
+      },
+      "scale": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Scaling factor of image",
+        "defaultValue": {
+          "value": "1",
+          "computed": false
+        }
+      },
+      "filename": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "Name of image file to load",
+        "defaultValue": {
+          "value": "'camera.png'",
+          "computed": false
+        }
+      },
+      "json_data": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "Sketch content as JSON string",
+        "defaultValue": {
+          "value": "''",
+          "computed": false
+        }
+      },
+      "setProps": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Dash-assigned callback that should be called whenever any of the\nproperties change"
+      }
+    }
+  },
+  "src/lib/components/SketchFieldDemo.react.js": {
+    "description": "SketchFieldDemo is an example component.\nIt takes a property, `label`, and\ndisplays it.\nIt renders an input with the property `value`\nwhich is editable by the user.",
+    "displayName": "SketchFieldDemo",
+    "methods": [
+      {
+        "name": "_selectTool",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "event",
+            "type": null
+          },
+          {
+            "name": "index",
+            "type": null
+          },
+          {
+            "name": "value",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "_save",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "_download",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "_renderTile",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "drawing",
+            "type": null
+          },
+          {
+            "name": "index",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "_removeMe",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "index",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "_undo",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "_redo",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "_clear",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "_onSketchChange",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "_onBackgroundImageDrop",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "accepted",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ],
+    "props": {
+      "id": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The ID used to identify this component in Dash callbacks"
+      },
+      "label": {
+        "type": {
+          "name": "string"
+        },
+        "required": true,
+        "description": "A label that will be printed when this component is rendered."
+      },
+      "value": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The value displayed in the input"
+      },
+      "lineColor": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "the color of the line"
+      },
+      "filename": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The value displayed in the input"
+      },
+      "setProps": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Dash-assigned callback that should be called whenever any of the\nproperties change"
+      }
+    }
+  }
+}
