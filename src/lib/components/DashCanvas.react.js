@@ -29,24 +29,23 @@ export default class DashCanvas extends Component {
 
     componentDidMount() {
     let sketch = this._sketch;
-    sketch.setBackgroundFromDataUrl(this.props.filename, {});
+    let opts = {left:0,
+		top:0,
+		scale:this.props.scale}
+    sketch.addImg(this.props.filename, opts);
     }
 
     componentDidUpdate(prevProps) {
     let sketch = this._sketch;
     // Typical usage (don't forget to compare props):
     if (this.props.image_content !== prevProps.image_content) {
-        let {stretched, stretchedX, stretchedY, originX, originY} = this.state;
-        sketch.setBackgroundFromDataUrl(this.props.image_content, {
-                stretched: stretched,
-                stretchedX: stretchedX,
-                stretchedY: stretchedY,
-                originX: originX,
-                originY: originY
-            });
-       }
-      let JSON_content = JSON.stringify(this._sketch.toJSON());
-      console.log(JSON_content);
+	let opts = {left:0,
+		    top:0,
+		    scale:this.props.scale}
+	sketch.addImg(this.props.image_content, opts);
+        let JSON_content = JSON.stringify(this._sketch.toJSON());
+        console.log(JSON_content);
+    };
     };
 
     _save() {
@@ -82,6 +81,7 @@ export default class DashCanvas extends Component {
                          lineWidth={this.state.lineWidth}/>
 		       <button onClick={(e) => this._undo()}> Undo </button>
 		       <button onClick={(e) => this._sketch.zoom(1.25)}> Zoom </button>
+		       <button onClick={(e) => this._sketch.zoom(0.8)}> Unzoom </button>
 		       <button onClick={(e) => this._save()}> Save </button>
 		</div>
 	    
@@ -94,7 +94,7 @@ export default class DashCanvas extends Component {
 
 DashCanvas.defaultProps = {filename:'camera.png', 
 			   json_data:'', image_content:'',
-			   width:500, height:500};
+			   width:500, height:500, scale:1};
 
 DashCanvas.propTypes = {
     /**
@@ -122,6 +122,11 @@ DashCanvas.propTypes = {
      * The height of the canvas
      */
     height: PropTypes.number,
+
+    /**
+     * Scaling factor of image
+     */
+    scale: PropTypes.number,
  
     /**
      * Name of image file to load

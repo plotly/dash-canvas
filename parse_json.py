@@ -4,7 +4,7 @@ from skimage import draw, morphology
 from scipy import ndimage
 
 
-def _indices_of_path(path):
+def _indices_of_path(path, scale=1):
     """
     Retrieve pixel indices (integer values). 
 
@@ -27,9 +27,9 @@ def _indices_of_path(path):
     """
     rr, cc = [], []
     for (Q1, Q2) in zip(path[:-2], path[1:-1]):
-        inds = draw.bezier_curve(int(Q1[-1]), int(Q1[-2]), 
-                                 int(Q2[2]), int(Q2[1]), 
-                                 int(Q2[4]), int(Q2[3]), 1)
+        inds = draw.bezier_curve(int(Q1[-1] / scale), int(Q1[-2] / scale), 
+                                 int(Q2[2] / scale), int(Q2[1] / scale), 
+                                 int(Q2[4] / scale), int(Q2[3] / scale), 1)
         rr += list(inds[0])
         cc += list(inds[1])
     return rr, cc
@@ -62,10 +62,12 @@ def parse_jsonstring(string, shape=None):
         data = json.loads(string)
     except TypeError:
         return mask
-
+    scale = 1
     for obj in data['objects']:
+        if obj['type'] == 'image':
+            scale = obj['scaleX']
         if obj['type'] == 'path':
-            inds = _indices_of_path(obj['path'])
+            inds = _indices_of_path(obj['path'], scale=scale)
             radius = obj['strokeWidth'] // 2
             mask_tmp = np.zeros(shape, dtype=np.bool)
             mask_tmp[inds[0], inds[1]] = 1

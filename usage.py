@@ -16,7 +16,9 @@ from image_processing_utils import watershed_segmentation
 filename = 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Mitochondria%2C_mammalian_lung_-_TEM_%282%29.jpg'
 img = io.imread(filename, as_gray=True)
 height, width = img.shape
-
+canvas_width = 400
+canvas_height = int(height * canvas_width / width)
+scale = canvas_width / width
 
 # ------------------ App definition ---------------------
 
@@ -26,8 +28,9 @@ app.scripts.config.serve_locally = True
 app.css.config.serve_locally = True
 
 app.layout = html.Div([
+    html.Div([
      html.Div([
-     html.H1(children='Image segmentation tool'),
+     html.H2(children='Segmentation tool'),
 
      dcc.Markdown('''
         Paint on each object you want to segment
@@ -37,14 +40,14 @@ app.layout = html.Div([
      dash_canvas.DashCanvas(
         id='canvas',
         label='my-label',
-        width=width,
-	height=height,
+        width=canvas_width,
+	height=canvas_height,
+        scale=scale,
         filename=filename
     ),
-    ]),
-
+     ], style={'width': '39%', 'display': 'inline-block'}),
     html.Div([
-    html.H1(children='Segmentation result'),
+    html.H2(children='Segmentation result'),
     dcc.Graph(
         id='segmentation',
 	figure={
@@ -53,14 +56,14 @@ app.layout = html.Div([
                     z=img, colorscale='Greys'
                     )
                 ],
-            'layout': dict(width=width, height=height,
+            'layout': dict(width=scale*width, height=scale*height,
                 yaxis=dict(autorange='reversed'))
             }
 
 	)
-	])],# Div
-
-	className='row')
+    ], style={'width': '39%', 'display': 'inline-block'})],# Div
+	className="row")
+    ])
 
 # ----------------------- Callbacks -----------------------------
 
@@ -79,7 +82,7 @@ def update_figure(string):
                     line=dict(width=3)
                 )
                 ],
-            'layout': dict(width=width, height=height,
+            'layout': dict(width=scale*width,
                             yaxis=dict(autorange='reversed'))
 
     }
