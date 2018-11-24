@@ -6,3 +6,4 @@ dash-renderer
 plotly
 numpy
 scikit-image
+gunicorn
