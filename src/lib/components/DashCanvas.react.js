@@ -28,11 +28,13 @@ export default class DashCanvas extends Component {
 
 
     componentDidMount() {
-    let sketch = this._sketch;
-    let opts = {left:0,
-		top:0,
-		scale:this.props.scale}
-    sketch.addImg(this.props.filename, opts);
+    if (this.props.filename.length > 0){
+	let sketch = this._sketch;
+	let opts = {left:0,
+		    top:0,
+		    scale:this.props.scale}
+	sketch.addImg(this.props.filename, opts);
+	}
     }
 
     componentDidUpdate(prevProps) {
@@ -92,7 +94,7 @@ export default class DashCanvas extends Component {
 
 }
 
-DashCanvas.defaultProps = {filename:'camera.png', 
+DashCanvas.defaultProps = {filename:'', 
 			   json_data:'', image_content:'',
 			   width:500, height:500, scale:1};
 
