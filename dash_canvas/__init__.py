@@ -33,7 +33,8 @@ _js_dist = [
     {
         'relative_package_path': 'dash_canvas.min.js',
         'dev_package_path': 'dash_canvas.dev.js',
-        
+        'external_url': 'https://unpkg.com/{0}@{1}/{0}/{0}.min.js'.format(
+            __name__, __version__),
         'namespace': package_name
     }
 ]

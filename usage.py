@@ -26,13 +26,13 @@ scale = canvas_width / width
 
 app = dash.Dash(__name__)
 
-app.scripts.config.serve_locally = True
-app.css.config.serve_locally = True
-
 app.css.append_css({
     'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
 })
 
+
+app.scripts.config.serve_locally = True
+app.css.config.serve_locally = True
 
 
 app.layout = html.Div([
@@ -52,14 +52,14 @@ app.layout = html.Div([
         scale=scale,
         filename=filename,
     ),
-     ], className="four columns"),
+     ], className="six columns"),
     html.Div([
     html.H2(children='Segmentation result'),
     dcc.Graph(
         id='segmentation',
         figure=image_with_contour(img, img>0)
 	)
-    ], className="four columns")],# Div
+    ], className="six columns")],# Div
 	className="row")
     ])
 
