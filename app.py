@@ -51,14 +51,14 @@ app.layout = html.Div([
         scale=scale,
         filename=filename,
     ),
-     ], className="six columns"),
+     ], className="four columns"),
     html.Div([
     html.H2(children='Segmentation result'),
     dcc.Graph(
         id='segmentation',
         figure=image_with_contour(img, img>0)
 	)
-    ], className="six columns")],# Div
+    ], className="four columns")],# Div
 	className="row")
     ])
 
