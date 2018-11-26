@@ -26,6 +26,13 @@
         "required": false,
         "description": "The ID used to identify this component in Dash callbacks"
       },
+      "className": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "className of the parent div"
+      },
       "label": {
         "type": {
           "name": "string"
@@ -84,7 +91,7 @@
         "required": false,
         "description": "Name of image file to load",
         "defaultValue": {
-          "value": "'camera.png'",
+          "value": "''",
           "computed": false
         }
       },

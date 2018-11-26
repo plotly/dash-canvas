@@ -10,6 +10,7 @@ regions.
 
 Keyword arguments:
 - id (string; optional): The ID used to identify this component in Dash callbacks
+- className (string; optional): className of the parent div
 - label (string; required): A label that will be printed when this component is rendered.
 - image_content (string; optional): Image data
 - width (number; optional): The width of the canvas
@@ -20,13 +21,13 @@ Keyword arguments:
 
 Available events: """
     @_explicitize_args
-    def __init__(self, id=Component.UNDEFINED, label=Component.REQUIRED, image_content=Component.UNDEFINED, width=Component.UNDEFINED, height=Component.UNDEFINED, scale=Component.UNDEFINED, filename=Component.UNDEFINED, json_data=Component.UNDEFINED, **kwargs):
-        self._prop_names = ['id', 'label', 'image_content', 'width', 'height', 'scale', 'filename', 'json_data']
+    def __init__(self, id=Component.UNDEFINED, className=Component.UNDEFINED, label=Component.REQUIRED, image_content=Component.UNDEFINED, width=Component.UNDEFINED, height=Component.UNDEFINED, scale=Component.UNDEFINED, filename=Component.UNDEFINED, json_data=Component.UNDEFINED, **kwargs):
+        self._prop_names = ['id', 'className', 'label', 'image_content', 'width', 'height', 'scale', 'filename', 'json_data']
         self._type = 'DashCanvas'
         self._namespace = 'dash_canvas'
         self._valid_wildcard_attributes =            []
         self.available_events = []
-        self.available_properties = ['id', 'label', 'image_content', 'width', 'height', 'scale', 'filename', 'json_data']
+        self.available_properties = ['id', 'className', 'label', 'image_content', 'width', 'height', 'scale', 'filename', 'json_data']
         self.available_wildcard_properties =            []
 
         _explicit_args = kwargs.pop('_explicit_args')
@@ -34,7 +35,7 @@ Available events: """
         _locals.update(kwargs)  # For wildcard attrs
         args = {k: _locals[k] for k in _explicit_args if k != 'children'}
 
-        for k in ['label']:
+        for k in [u'label']:
             if k not in args:
                 raise TypeError(
                     'Required argument `' + k + '` was not specified.')

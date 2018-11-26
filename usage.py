@@ -29,12 +29,17 @@ app = dash.Dash(__name__)
 app.scripts.config.serve_locally = True
 app.css.config.serve_locally = True
 
+app.css.append_css({
+    'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
+})
+
+
+
 app.layout = html.Div([
     html.Div([
-     html.Div([
-     html.H2(children='Segmentation tool'),
-
-     dcc.Markdown('''
+    html.Div([
+    html.H2(children='Segmentation tool'),
+    dcc.Markdown('''
         Paint on each object you want to segment
 	then press the Save button to trigger the segmentation.
     '''),
@@ -45,20 +50,9 @@ app.layout = html.Div([
         width=canvas_width,
 	height=canvas_height,
         scale=scale,
-        filename=filename
+        filename=filename,
     ),
      ], className="four columns"),
-    html.Div([
-        dash_canvas.DashCanvas(
-        id='canvas2',
-        label='my-label',
-        width=canvas_width,
-	height=canvas_height,
-        scale=scale,
-        filename=filename
-    ),
-
-        ], className="four columns"),
     html.Div([
     html.H2(children='Segmentation result'),
     dcc.Graph(
@@ -77,10 +71,6 @@ def update_figure(string):
     mask = parse_jsonstring(string, shape=(height, width))
     seg = watershed_segmentation(img, mask)
     return image_with_contour(img, seg)
-
-app.css.append_css({
-    'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
-})
 
 
 if __name__ == '__main__':

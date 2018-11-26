@@ -73,7 +73,7 @@ export default class DashCanvas extends Component {
         value = this.state.value;
       }
         return (
-		<div>
+		<div className={this.props.className}>
 	    	<SketchField name='sketch'
                          ref={(c) => this._sketch = c}
                          tool={Tools.Pencil}
@@ -104,6 +104,10 @@ DashCanvas.propTypes = {
      */
     id: PropTypes.string,
 
+    /**
+     * className of the parent div
+     */
+    className: PropTypes.string,
 
     /**
      * A label that will be printed when this component is rendered.
