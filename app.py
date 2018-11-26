@@ -11,29 +11,34 @@ import plotly.graph_objs as go
 
 from parse_json import parse_jsonstring
 from image_processing_utils import watershed_segmentation
+from plot_utils import image_with_contour
 
 # Image to segment and shape parameters
 filename = 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Mitochondria%2C_mammalian_lung_-_TEM_%282%29.jpg'
 img = io.imread(filename, as_gray=True)
+print(img.dtype)
 height, width = img.shape
 canvas_width = 400
 canvas_height = int(height * canvas_width / width)
 scale = canvas_width / width
 
 # ------------------ App definition ---------------------
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__)
+
 server = app.server
+
+app.css.append_css({
+    'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
+})
 
 
 
 app.layout = html.Div([
     html.Div([
-     html.Div([
-     html.H2(children='Segmentation tool'),
-
-     dcc.Markdown('''
+    html.Div([
+    html.H2(children='Segmentation tool'),
+    dcc.Markdown('''
         Paint on each object you want to segment
 	then press the Save button to trigger the segmentation.
     '''),
@@ -44,25 +49,16 @@ app.layout = html.Div([
         width=canvas_width,
 	height=canvas_height,
         scale=scale,
-        filename=filename
+        filename=filename,
     ),
-     ], style={'width': '39%', 'display': 'inline-block'}),
+     ], className="four columns"),
     html.Div([
     html.H2(children='Segmentation result'),
     dcc.Graph(
         id='segmentation',
-	figure={
-            'data': [
-                go.Heatmap(
-                    z=img, colorscale='Greys'
-                    )
-                ],
-            'layout': dict(width=scale*width, height=scale*height,
-                yaxis=dict(autorange='reversed'))
-            }
-
+        figure=image_with_contour(img, img>0)
 	)
-    ], style={'width': '39%', 'display': 'inline-block'})],# Div
+    ], className="four columns")],# Div
 	className="row")
     ])
 
@@ -73,25 +69,7 @@ app.layout = html.Div([
 def update_figure(string):
     mask = parse_jsonstring(string, shape=(height, width))
     seg = watershed_segmentation(img, mask)
-    return {'data': [
-                go.Heatmap(
-                    z=img, colorscale='Greys'
-                    ),
-                go.Contour(
-                    z=seg,
-                    contours=dict(coloring='lines',),
-                    line=dict(width=3)
-                )
-                ],
-            'layout': dict(width=scale*width,
-                            yaxis=dict(autorange='reversed'))
-
-    }
-
-
-app.css.append_css({
-    'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
-})
+    return image_with_contour(img, seg)
 
 
 if __name__ == '__main__':
