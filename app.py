@@ -16,7 +16,6 @@ from plot_utils import image_with_contour
 # Image to segment and shape parameters
 filename = 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Mitochondria%2C_mammalian_lung_-_TEM_%282%29.jpg'
 img = io.imread(filename, as_gray=True)
-print(img.dtype)
 height, width = img.shape
 canvas_width = 400
 canvas_height = int(height * canvas_width / width)
