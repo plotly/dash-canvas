@@ -27,15 +27,15 @@ def _indices_of_path(path, scale=1):
     """
     rr, cc = [], []
     for (Q1, Q2) in zip(path[:-2], path[1:-1]):
-        inds = draw.bezier_curve(int(Q1[-1] / scale), int(Q1[-2] / scale), 
-                                 int(Q2[2] / scale), int(Q2[1] / scale), 
-                                 int(Q2[4] / scale), int(Q2[3] / scale), 1)
+        inds = draw.bezier_curve(round(Q1[-1] / scale), round(Q1[-2] / scale), 
+                                 round(Q2[2] / scale), round(Q2[1] / scale), 
+                                 round(Q2[4] / scale), round(Q2[3] / scale), 1)
         rr += list(inds[0])
         cc += list(inds[1])
     return rr, cc
 
 
-def parse_jsonstring(string, shape=None):
+def parse_jsonstring(string, shape=None, scale=1):
     """
     Parse JSON string to draw the path saved by react-sketch.
 
@@ -60,15 +60,17 @@ def parse_jsonstring(string, shape=None):
     mask = np.zeros(shape, dtype=np.bool)
     try:
         data = json.loads(string)
-    except TypeError:
+    except:
         return mask
     scale = 1
+    i = 1
     for obj in data['objects']:
         if obj['type'] == 'image':
             scale = obj['scaleX']
         if obj['type'] == 'path':
+            i += 1
             inds = _indices_of_path(obj['path'], scale=scale)
-            radius = obj['strokeWidth'] // 2
+            radius = round(obj['strokeWidth'] / 2. / scale)
             mask_tmp = np.zeros(shape, dtype=np.bool)
             mask_tmp[inds[0], inds[1]] = 1
             mask_tmp = ndimage.binary_dilation(mask_tmp,

@@ -11,7 +11,7 @@ export default class DashCanvas extends Component {
     constructor(props) {
     super(props);
     this.state = {
-        lineColor: 'black',
+        lineColor: 'yellow',
         lineWidth: 30,
         shadowWidth: 0,
         shadowOffset: 0,
@@ -40,14 +40,17 @@ export default class DashCanvas extends Component {
     componentDidUpdate(prevProps) {
     let sketch = this._sketch;
     // Typical usage (don't forget to compare props):
-    if (this.props.image_content !== prevProps.image_content) {
+    if ( 
+	(this.props.image_content !== prevProps.image_content)){
+	sketch.clear();
+	this.props.setProps({json_data: ''});
 	let opts = {left:0,
 		    top:0,
 		    scale:this.props.scale}
 	sketch.addImg(this.props.image_content, opts);
-        let JSON_content = JSON.stringify(this._sketch.toJSON());
-        console.log(JSON_content);
     };
+
+
     };
 
     _save() {
