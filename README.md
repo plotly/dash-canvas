@@ -3,6 +3,8 @@
 dash-canvas is a Dash component for drawing on a background image, and
 selecting regions of the image.
 
+Try out the [demo app here](http://dash-canvas.herokuapp.com/)
+
 Get started with:
 1. Install Dash and its dependencies: https://dash.plot.ly/installation
 2. Run `python usage.py`
