@@ -2,8 +2,6 @@ import numpy as np
 import json
 from skimage import io
 from PIL import Image
-from io import BytesIO
-import base64
 
 
 import dash_canvas
@@ -16,6 +14,7 @@ import plotly.graph_objs as go
 from parse_json import parse_jsonstring
 from image_processing_utils import watershed_segmentation
 from plot_utils import image_with_contour
+from io_utils import image_string_to_PILImage
 
 # Image to segment and shape parameters
 filename = 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Mitochondria%2C_mammalian_lung_-_TEM_%282%29.jpg'
@@ -24,6 +23,7 @@ height, width = img.shape
 canvas_width = 500
 canvas_height = round(height * canvas_width / width)
 scale = canvas_width / width
+
 
 # ------------------ App definition ---------------------
 
@@ -99,7 +99,7 @@ def update_figure_upload(image, string, h, s, w):
             im = img
             image = img
         else:
-            im = Image.open(BytesIO(base64.b64decode(image[22:])))
+            im = image_string_to_PILImage(image_string)
             im = np.asarray(im)
         seg = watershed_segmentation(im, mask)
     else:
@@ -130,11 +130,12 @@ def update_canvas_upload_shape(image_string, w, h):
         raise ValueError
     if image_string is not None:
         # very dirty hack, this should be made more robust using regexp
-        im = Image.open(BytesIO(base64.b64decode(image_string[22:])))
+        im = image_string_to_PILImage(image_string)
         im_h, im_w = im.height, im.width
         return round(w / im_w * im_h)
     else:
         return canvas_height
+
 
 @app.callback(Output('canvas', 'scale'),
              [Input('upload-image', 'contents')])
@@ -143,7 +144,7 @@ def update_canvas_upload_scale(image_string):
         raise ValueError
     if image_string is not None:
         # very dirty hack, this should be made more robust using regexp
-        im = Image.open(BytesIO(base64.b64decode(image_string[22:])))
+        im = image_string_to_PILImage(image_string)
         im_h, im_w = im.height, im.width
         return canvas_width / im_w
     else:

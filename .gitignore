@@ -50,3 +50,6 @@ venv.bak/
 .DS_Store
 .env
 
+*~
+*swp
+*lprof
