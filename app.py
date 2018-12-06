@@ -99,7 +99,7 @@ def update_figure_upload(image, string, h, s, w):
             im = img
             image = img
         else:
-            im = image_string_to_PILImage(image_string)
+            im = image_string_to_PILImage(image)
             im = np.asarray(im)
         seg = watershed_segmentation(im, mask)
     else:
