@@ -6,4 +6,6 @@ dash-renderer
 plotly
 numpy
 scikit-image
+scikit-learn
+pyamg
 gunicorn
