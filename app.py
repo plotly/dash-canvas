@@ -12,7 +12,7 @@ import dash_core_components as dcc
 import plotly.graph_objs as go
 
 from parse_json import parse_jsonstring
-from image_processing_utils import watershed_segmentation
+from image_processing_utils import segmentation_generic
 from plot_utils import image_with_contour
 from io_utils import image_string_to_PILImage
 
@@ -72,7 +72,15 @@ app.layout = html.Div([
 		},
 		accept='image/*',
 	    ),
-
+    dcc.Dropdown(
+        id='algorithm',
+        options=[
+            {'label': 'Watershed', 'value': 'watershed'},
+            {'label': 'Random Walker', 'value': 'random_walker'},
+            {'label': 'Random Forest', 'value': 'random_forest'}
+        ],
+        value='watershed'
+    ),
      ], className="six columns"),
     html.Div([
     html.H2(children='Segmentation result'),
@@ -91,8 +99,9 @@ app.layout = html.Div([
               Input('canvas', 'json_data'),
               Input('canvas', 'height')],
              [State('canvas', 'scale'),
-              State('canvas', 'width')])
-def update_figure_upload(image, string, h, s, w):
+              State('canvas', 'width'),
+	      State('algorithm', 'value')])
+def update_figure_upload(image, string, h, s, w, algorithm):
     mask = parse_jsonstring(string, shape=(round(h/s), round(w/s)))
     if mask.sum() > 0:
         if image is None:
@@ -101,7 +110,7 @@ def update_figure_upload(image, string, h, s, w):
         else:
             im = image_string_to_PILImage(image)
             im = np.asarray(im)
-        seg = watershed_segmentation(im, mask)
+        seg = segmentation_generic(im, mask, mode=algorithm)
     else:
         if image is None:
             image = img
