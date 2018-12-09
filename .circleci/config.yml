@@ -51,8 +51,8 @@ jobs:
                   command: |
                       . venv/bin/activate
                       python --version
-                      pytest tests/test_parse_json
-                      pytest tests/test_image_processing_utils
+                      pytest tests/test_parse_json.py
+                      pytest tests/test_image_processing_utils.py
 
 
 workflows:
