@@ -51,6 +51,7 @@ jobs:
                   command: |
                       . venv/bin/activate
                       python --version
+                      pwd
                       pytest tests/test_parse_json.py
                       pytest tests/test_image_processing_utils.py
 
