@@ -84,6 +84,28 @@
           "computed": false
         }
       },
+      "lineWidth": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Width of drawing line",
+        "defaultValue": {
+          "value": "20",
+          "computed": false
+        }
+      },
+      "lineColor": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "Color of drawing line",
+        "defaultValue": {
+          "value": "'yellow'",
+          "computed": false
+        }
+      },
       "filename": {
         "type": {
           "name": "string"

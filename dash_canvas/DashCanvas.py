@@ -16,18 +16,20 @@ Keyword arguments:
 - width (number; optional): The width of the canvas
 - height (number; optional): The height of the canvas
 - scale (number; optional): Scaling factor of image
+- lineWidth (number; optional): Width of drawing line
+- lineColor (string; optional): Color of drawing line
 - filename (string; optional): Name of image file to load
 - json_data (string; optional): Sketch content as JSON string
 
 Available events: """
     @_explicitize_args
-    def __init__(self, id=Component.UNDEFINED, className=Component.UNDEFINED, label=Component.REQUIRED, image_content=Component.UNDEFINED, width=Component.UNDEFINED, height=Component.UNDEFINED, scale=Component.UNDEFINED, filename=Component.UNDEFINED, json_data=Component.UNDEFINED, **kwargs):
-        self._prop_names = ['id', 'className', 'label', 'image_content', 'width', 'height', 'scale', 'filename', 'json_data']
+    def __init__(self, id=Component.UNDEFINED, className=Component.UNDEFINED, label=Component.REQUIRED, image_content=Component.UNDEFINED, width=Component.UNDEFINED, height=Component.UNDEFINED, scale=Component.UNDEFINED, lineWidth=Component.UNDEFINED, lineColor=Component.UNDEFINED, filename=Component.UNDEFINED, json_data=Component.UNDEFINED, **kwargs):
+        self._prop_names = ['id', 'className', 'label', 'image_content', 'width', 'height', 'scale', 'lineWidth', 'lineColor', 'filename', 'json_data']
         self._type = 'DashCanvas'
         self._namespace = 'dash_canvas'
         self._valid_wildcard_attributes =            []
         self.available_events = []
-        self.available_properties = ['id', 'className', 'label', 'image_content', 'width', 'height', 'scale', 'filename', 'json_data']
+        self.available_properties = ['id', 'className', 'label', 'image_content', 'width', 'height', 'scale', 'lineWidth', 'lineColor', 'filename', 'json_data']
         self.available_wildcard_properties =            []
 
         _explicit_args = kwargs.pop('_explicit_args')
