@@ -11,16 +11,6 @@ export default class DashCanvas extends Component {
     constructor(props) {
     super(props);
     this.state = {
-        lineColor: 'yellow',
-        lineWidth: 30,
-        shadowWidth: 0,
-        shadowOffset: 0,
-        drawings: [],
-        stretched: false,
-        stretchedX: false,
-        stretchedY: false,
-        originX: 'left',
-        originY: 'top'
     };
     this._save = this._save.bind(this);
     this._undo = this._undo.bind(this);
@@ -35,6 +25,14 @@ export default class DashCanvas extends Component {
 		    scale:this.props.scale}
 	sketch.addImg(this.props.filename, opts);
 	}
+    if (this.props.image_content.length > 0){
+	let sketch = this._sketch;
+	let opts = {left:0,
+		    top:0,
+		    scale:this.props.scale}
+	sketch.addImg(this.props.image_content, opts);
+	}
+
     }
 
     componentDidUpdate(prevProps) {
@@ -83,7 +81,7 @@ export default class DashCanvas extends Component {
                          lineColor={this.props.lineColor}
 			 width={this.props.width}
 			 height={this.props.height}
-                         lineWidth={this.state.lineWidth}/>
+                         lineWidth={this.props.lineWidth}/>
 		       <button onClick={(e) => this._undo()}> Undo </button>
 		       <button onClick={(e) => this._sketch.zoom(1.25)}> Zoom </button>
 		       <button onClick={(e) => this._sketch.zoom(0.8)}> Unzoom </button>
@@ -99,7 +97,8 @@ export default class DashCanvas extends Component {
 
 DashCanvas.defaultProps = {filename:'', 
 			   json_data:'', image_content:'',
-			   width:500, height:500, scale:1};
+			   width:500, height:500, scale:1, lineWidth:20,
+			   lineColor:'yellow'};
 
 DashCanvas.propTypes = {
     /**
@@ -137,6 +136,16 @@ DashCanvas.propTypes = {
      */
     scale: PropTypes.number,
  
+    /**
+     * Width of drawing line
+     */
+    lineWidth: PropTypes.number,
+
+    /**
+     * Color of drawing line
+     */
+    lineColor: PropTypes.string,
+
     /**
      * Name of image file to load
      */

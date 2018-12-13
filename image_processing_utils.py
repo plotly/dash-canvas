@@ -5,6 +5,54 @@ from scipy import ndimage
 from sklearn.ensemble import RandomForestClassifier
 
 
+def modify_segmentation(labels, mask, img=None):
+    """
+    Divide already labeled image according to annotations. Each annotation
+    is used to divide a label in two subregions.
+
+    Parameters
+    ----------
+
+    labels : array of ints
+        Array of labels.
+    mask : binary of int array
+        Array with annotations.
+    img : array, default None
+        Image used for the segmentation.
+
+    Returns
+    -------
+
+    out : array of ints
+        New labels.
+    """
+    mask = measure.label(mask)
+    if img is None:
+        img = np.zeros_like(mask)
+    out = np.copy(labels)
+    bounding_boxes = ndimage.find_objects(labels)
+    max_label = labels.max()
+    annot_indices = np.unique(mask)[1:]
+    count = max_label + 1
+    for annot_index in annot_indices:
+        obj_label = np.argmax(np.bincount(labels[mask == annot_index]))
+        box = bounding_boxes[obj_label - 1]
+        img_box = img[box]
+        labels_box = labels[box]
+        gradient_img = - ndimage.gaussian_gradient_magnitude(img_box, 2)
+        mask_box = np.ones(img_box.shape, dtype=np.uint8)
+        mask_box[mask[box] == annot_index] = 0
+        mask_box = morphology.binary_erosion(mask_box, morphology.disk(5))
+        masked_region = labels_box == obj_label
+        mask_box[np.logical_not(masked_region)] = 0
+        mask_box = measure.label(mask_box)
+        res = segmentation.watershed(gradient_img, mask_box,
+                                                mask=masked_region)
+        out[box][res == 1] = count
+        count += 1
+    return out
+
+
 def watershed_segmentation(img, mask, sigma=4):
     """
     Watershed segmentation of image using annotations as label markers.
