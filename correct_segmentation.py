@@ -45,7 +45,13 @@ app.css.append_css({
 
 app.layout = html.Div([
     html.Div([
-    html.H2(children='Manual correction of automatic segmentation'),
+    html.H3(children='Manual correction of automatic segmentation'),
+    dcc.Markdown('''
+        Draw on the picture to delineate boundaries between objects which
+        have been incorrectly merged together, then press the Save button
+        to correct the segmentation.
+    '''),
+
     dash_canvas.DashCanvas(
         id='canvas',
         label='my-label',
