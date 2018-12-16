@@ -117,6 +117,17 @@
           "computed": false
         }
       },
+      "trigger": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Bla",
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
       "json_data": {
         "type": {
           "name": "string"

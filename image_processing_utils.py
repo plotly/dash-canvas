@@ -34,11 +34,15 @@ def modify_segmentation(labels, mask, img=None):
     max_label = labels.max()
     annot_indices = np.unique(mask)[1:]
     count = max_label + 1
+    shift = 0 if labels.min() > 0 else 1
     for annot_index in annot_indices:
-        obj_label = np.argmax(np.bincount(labels[mask == annot_index]))
+        obj_label = (np.argmax(np.bincount(labels[mask == annot_index])[shift:]
+                                )  + shift)
+        # Get subarrays
         box = bounding_boxes[obj_label - 1]
         img_box = img[box]
         labels_box = labels[box]
+        # Prepare watershed
         gradient_img = - ndimage.gaussian_gradient_magnitude(img_box, 2)
         mask_box = np.ones(img_box.shape, dtype=np.uint8)
         mask_box[mask[box] == annot_index] = 0
@@ -48,7 +52,7 @@ def modify_segmentation(labels, mask, img=None):
         mask_box = measure.label(mask_box)
         res = segmentation.watershed(gradient_img, mask_box,
                                                 mask=masked_region)
-        out[box][res == 1] = count
+        out[box][res == 1] = count # only modify one of the regions
         count += 1
     return out
 

@@ -53,7 +53,8 @@ export default class DashCanvas extends Component {
 
     _save() {
         let JSON_string = JSON.stringify(this._sketch.toJSON());
-	this.props.setProps({json_data: JSON_string});
+	let toggle_value = this.props.trigger + 1
+	this.props.setProps({json_data: JSON_string, trigger: toggle_value});
     };
 
 
@@ -96,7 +97,7 @@ export default class DashCanvas extends Component {
 }
 
 DashCanvas.defaultProps = {filename:'', 
-			   json_data:'', image_content:'',
+			   json_data:'', image_content:'', trigger:0,
 			   width:500, height:500, scale:1, lineWidth:20,
 			   lineColor:'yellow'};
 
@@ -150,6 +151,11 @@ DashCanvas.propTypes = {
      * Name of image file to load
      */
     filename: PropTypes.string,
+
+    /**
+     * Bla
+     */
+    trigger: PropTypes.number,
     
     /**
      * Sketch content as JSON string
