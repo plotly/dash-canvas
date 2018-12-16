@@ -1,6 +1,6 @@
 import numpy as np
 import json
-from skimage import io, color, segmentation, img_as_ubyte
+from skimage import io, color, segmentation, img_as_ubyte, filters, measure
 from PIL import Image
 
 
@@ -16,9 +16,12 @@ from io_utils import image_string_to_PILImage, array_to_data_url
 from image_processing_utils import modify_segmentation
 
 # Image to segment and shape parameters
-filename = 'grains.jpg'
-labels = np.load('labels_uint8.npy')
-img = io.imread(filename, as_gray=True)[:880]
+filename = 'https://upload.wikimedia.org/wikipedia/commons/1/1b/HumanChromosomesChromomycinA3.jpg'
+img = io.imread(filename, as_gray=True)
+mask = img > 1.2 * filters.threshold_otsu(img)
+labels = measure.label(mask)
+
+
 overlay = segmentation.mark_boundaries(img, labels)
 overlay = img_as_ubyte(overlay)
 
@@ -42,7 +45,13 @@ app.css.append_css({
 
 app.layout = html.Div([
     html.Div([
-    html.H2(children='Manual correction of automatic segmentation'),
+    html.H3(children='Manual correction of automatic segmentation'),
+    dcc.Markdown('''
+        Draw on the picture to delineate boundaries between objects which
+        have been incorrectly merged together, then press the Save button
+        to correct the segmentation.
+    '''),
+
     dash_canvas.DashCanvas(
         id='canvas',
         label='my-label',
@@ -58,13 +67,12 @@ app.layout = html.Div([
 
 # ----------------------- Callbacks -----------------------------
 @app.callback(Output('canvas', 'image_content'),
-             [Input('canvas', 'json_data'),],
-             [State('canvas', 'scale'),
+             [Input('canvas', 'trigger'),],
+             [State('canvas', 'json_data'),
+              State('canvas', 'scale'),
               State('canvas', 'height'),
 	      State('canvas', 'width')])
-def update_segmentation(string, s, h, w):
-    if string is None or len(string) == 0:
-        raise ValueError
+def update_segmentation(toggle, string, s, h, w):
     mask = parse_jsonstring(string, shape=(height, width))
     new_labels = modify_segmentation(labels, mask, img=img)
     overlay = segmentation.mark_boundaries(img, new_labels)

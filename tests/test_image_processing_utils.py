@@ -31,5 +31,10 @@ def test_modify_segmentation():
     mask[2:53, 75] = 1
     mask[100, 17:60] = 1
 
+    # Labels start at 1
     seg = modify_segmentation(img, measure.label(mask))
+    assert len(np.unique(seg)) == len(np.unique(img)) + 2
+
+    # Labels start at 0
+    seg = modify_segmentation(img + 1, measure.label(mask))
     assert len(np.unique(seg)) == len(np.unique(img)) + 2
