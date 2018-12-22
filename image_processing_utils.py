@@ -26,6 +26,7 @@ def modify_segmentation(labels, mask, img=None):
     out : array of ints
         New labels.
     """
+    labels = np.asarray(labels)
     mask = measure.label(mask)
     if img is None:
         img = np.zeros_like(mask)

@@ -63,23 +63,34 @@ app.layout = html.Div([
         image_content=array_to_data_url(overlay),
     ),
      ], className="six columns"),
+    dcc.Store(id='cache', data=''),
     ])
 
 # ----------------------- Callbacks -----------------------------
-@app.callback(Output('canvas', 'image_content'),
+@app.callback(Output('cache', 'data'),
              [Input('canvas', 'trigger'),],
              [State('canvas', 'json_data'),
               State('canvas', 'scale'),
               State('canvas', 'height'),
-	      State('canvas', 'width')])
-def update_segmentation(toggle, string, s, h, w):
+	      State('canvas', 'width'),
+              State('cache', 'data')])
+def update_segmentation(toggle, string, s, h, w, children):
+    if len(children) == 0:
+        labs = labels
+    else:
+        labs = np.asarray(children)
     mask = parse_jsonstring(string, shape=(height, width))
-    new_labels = modify_segmentation(labels, mask, img=img)
+    new_labels = modify_segmentation(labs, mask, img=img)
+    return new_labels
+
+
+@app.callback(Output('canvas', 'image_content'),
+             [Input('cache', 'data')])
+def update_figure(children):
+    new_labels = np.array(children)
     overlay = segmentation.mark_boundaries(img, new_labels)
     overlay = img_as_ubyte(overlay)
     return array_to_data_url(overlay)
-
-
 
 
 
