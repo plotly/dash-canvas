@@ -47,7 +47,7 @@ def modify_segmentation(labels, mask, img=None):
         gradient_img = - ndimage.gaussian_gradient_magnitude(img_box, 2)
         mask_box = np.ones(img_box.shape, dtype=np.uint8)
         mask_box[mask[box] == annot_index] = 0
-        mask_box = morphology.binary_erosion(mask_box, morphology.disk(5))
+        mask_box = morphology.binary_erosion(mask_box, morphology.disk(1))
         masked_region = labels_box == obj_label
         mask_box[np.logical_not(masked_region)] = 0
         mask_box = measure.label(mask_box)
