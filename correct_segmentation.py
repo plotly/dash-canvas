@@ -47,11 +47,17 @@ app.layout = html.Div([
     html.Div([
     html.H3(children='Manual correction of automatic segmentation'),
     dcc.Markdown('''
-        Draw on the picture to delineate boundaries between objects which
-        have been incorrectly merged together, then press the Save button
-        to correct the segmentation.
+        Annotate the picture to delineate boundaries between objects (in
+        split mode) or to join objects together (in merge mode), then press
+        the Save button to correct the segmentation.
     '''),
-
+    dcc.RadioItems(id='mode',
+    options=[
+        {'label': 'Merge objects', 'value': 'merge'},
+        {'label': 'Split objects', 'value': 'split'},
+    ],
+    value='split'
+    ),
     dash_canvas.DashCanvas(
         id='canvas',
         label='my-label',
@@ -73,14 +79,15 @@ app.layout = html.Div([
               State('canvas', 'scale'),
               State('canvas', 'height'),
 	      State('canvas', 'width'),
-              State('cache', 'data')])
-def update_segmentation(toggle, string, s, h, w, children):
+              State('cache', 'data'),
+              State('mode', 'value')])
+def update_segmentation(toggle, string, s, h, w, children, mode):
     if len(children) == 0:
         labs = labels
     else:
         labs = np.asarray(children)
     mask = parse_jsonstring(string, shape=(height, width))
-    new_labels = modify_segmentation(labs, mask, img=img)
+    new_labels = modify_segmentation(labs, mask, img=img, mode=mode)
     return new_labels
 
 

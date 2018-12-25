@@ -5,31 +5,21 @@ from scipy import ndimage
 from sklearn.ensemble import RandomForestClassifier
 
 
-def modify_segmentation(labels, mask, img=None):
+def _split_labels(labels, mask, img):
     """
-    Divide already labeled image according to annotations. Each annotation
-    is used to divide a label in two subregions.
+    Divide already labeled array ``labels`` according to array of annotations
+    ``mask``.
 
     Parameters
     ----------
 
     labels : array of ints
         Array of labels.
-    mask : binary of int array
+    mask : array of ints
         Array with annotations.
     img : array, default None
         Image used for the segmentation.
-
-    Returns
-    -------
-
-    out : array of ints
-        New labels.
     """
-    labels = np.asarray(labels)
-    mask = measure.label(mask)
-    if img is None:
-        img = np.zeros_like(mask)
     out = np.copy(labels)
     bounding_boxes = ndimage.find_objects(labels)
     max_label = labels.max()
@@ -57,6 +47,67 @@ def modify_segmentation(labels, mask, img=None):
         count += 1
     return out
 
+
+def _merge_labels(labels, mask, skip_zero=True):
+    """
+    Merge objects covered by the same annotation, given an array of 
+    labels defining objects and a labeled mask of annotations.
+
+    Parameters
+    ----------
+
+    labels : array of ints
+        Array of labels.
+    mask : array of ints
+        Array with annotations.
+
+    """
+    annot_indices = np.unique(mask)[1:]
+    label_indices = np.arange(labels.max() + 1, dtype=np.int)
+    for index in annot_indices:
+        object_indices = np.unique(labels[mask == index])
+        if skip_zero:
+            object_indices = np.setdiff1d(object_indices, [0])
+        label_indices[object_indices] = object_indices[0]
+    relabeled, _, _ = segmentation.relabel_sequential(label_indices)
+    return relabeled[labels]
+
+
+def modify_segmentation(labels, mask, img=None, mode='split'):
+    """
+    Modify already labeled image according to annotations. In 'split' mode,
+    each annotation is used to divide a label in two subregions. In 'merge'
+    mode, objects covered by the same annotation are merged together.
+
+    Parameters
+    ----------
+
+    labels : array of ints
+        Array of labels.
+    mask : binary of int array
+        Array with annotations.
+    img : array, default None
+        Image used for the segmentation.
+    mode: string, 'split' or 'merge'
+
+    Returns
+    -------
+
+    out : array of ints
+        New labels.
+    """
+    labels = np.asarray(labels)
+    mask = measure.label(mask)
+    if img is None:
+        img = np.zeros_like(mask)
+    
+    if mode == 'split':
+        return _split_labels(labels, mask, img)
+    elif mode == 'merge':
+        return _merge_labels(labels, mask)
+    else:
+        print(mode)
+        raise ValueError('mode should be either split or merge')
 
 def watershed_segmentation(img, mask, sigma=4):
     """
