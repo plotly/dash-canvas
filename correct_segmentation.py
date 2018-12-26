@@ -47,11 +47,18 @@ app.layout = html.Div([
     html.Div([
     html.H3(children='Manual correction of automatic segmentation'),
     dcc.Markdown('''
-        Draw on the picture to delineate boundaries between objects which
-        have been incorrectly merged together, then press the Save button
-        to correct the segmentation.
+        Annotate the picture to delineate boundaries between objects (in
+        split mode) or to join objects together (in merge mode), then press
+        the Save button to correct the segmentation.
     '''),
-
+    dcc.RadioItems(id='mode',
+    options=[
+        {'label': 'Merge objects', 'value': 'merge'},
+        {'label': 'Split objects', 'value': 'split'},
+    ],
+    value='split',
+    labelStyle={'display': 'inline-block'}
+    ),
     dash_canvas.DashCanvas(
         id='canvas',
         label='my-label',
@@ -63,6 +70,21 @@ app.layout = html.Div([
         image_content=array_to_data_url(overlay),
     ),
      ], className="six columns"),
+    dcc.RadioItems(id='save-mode',
+    options=[
+        {'label': 'png', 'value': 'png'},
+        #{'label': 'raw', 'value': 'raw'},
+    ],
+    value='png',
+    labelStyle={'display': 'inline-block'}
+    ),
+    html.A(
+        'Download Data',
+        id='download-link',
+        download="correct_segmentation.png",
+        href="",
+        target="_blank"
+    ),
     dcc.Store(id='cache', data=''),
     ])
 
@@ -73,27 +95,46 @@ app.layout = html.Div([
               State('canvas', 'scale'),
               State('canvas', 'height'),
 	      State('canvas', 'width'),
-              State('cache', 'data')])
-def update_segmentation(toggle, string, s, h, w, children):
+              State('cache', 'data'),
+              State('mode', 'value')])
+def update_segmentation(toggle, string, s, h, w, children, mode):
     if len(children) == 0:
         labs = labels
     else:
         labs = np.asarray(children)
     mask = parse_jsonstring(string, shape=(height, width))
-    new_labels = modify_segmentation(labs, mask, img=img)
+    new_labels = modify_segmentation(labs, mask, img=img, mode=mode)
     return new_labels
 
 
 @app.callback(Output('canvas', 'image_content'),
              [Input('cache', 'data')])
-def update_figure(children):
-    new_labels = np.array(children)
+def update_figure(labs):
+    new_labels = np.array(labs)
     overlay = segmentation.mark_boundaries(img, new_labels)
     overlay = img_as_ubyte(overlay)
     return array_to_data_url(overlay)
 
 
+@app.callback(Output('download-link', 'download'),
+              [Input('save-mode', 'value')])
+def download_name(save_mode):
+    if save_mode == 'png':
+        return 'correct_segmentation.png'
+    else:
+        return 'correct_segmentation.raw'
 
+
+@app.callback(Output('download-link', 'href'),
+             [Input('cache', 'data')],
+             [State('save-mode', 'value')])
+def save_segmentation(labs, save_mode):
+    new_labels = np.array(labs)
+    np.save('labels.npy', new_labels)
+    if save_mode == 'png':
+        color_labels = color.label2rgb(new_labels)
+        uri = array_to_data_url(new_labels, dtype=np.uint8)
+        return uri
 
 if __name__ == '__main__':
     app.run_server(debug=True)

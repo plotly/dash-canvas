@@ -16,7 +16,7 @@ def test_watershed_segmentation():
     assert np.all(res[10:15, 10:15] == 2)
 
 
-def test_modify_segmentation():
+def test_split_segmentation():
     img = np.zeros((100, 100), dtype=np.uint8)
     img[:40, 55:] = 1
     img[40:, :30] = 2
@@ -32,9 +32,19 @@ def test_modify_segmentation():
     mask[100, 17:60] = 1
 
     # Labels start at 1
-    seg = modify_segmentation(img, measure.label(mask))
+    seg = modify_segmentation(img, measure.label(mask), mode='split')
     assert len(np.unique(seg)) == len(np.unique(img)) + 2
 
     # Labels start at 0
     seg = modify_segmentation(img + 1, measure.label(mask))
     assert len(np.unique(seg)) == len(np.unique(img)) + 2
+
+
+def test_merge_segmentation():
+    img = np.zeros((20, 20), dtype=np.uint8)
+    img[:10, :10] = 1
+    img[10:, :10] = 2
+    mask = np.zeros_like(img)
+    mask[:, 5] = 1
+    seg = modify_segmentation(img, mask, mode='merge')
+    assert np.all(np.unique(seg) == np.array([0, 1]))

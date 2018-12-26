@@ -3,7 +3,9 @@ from io import BytesIO
 import base64
 
 
-def array_to_data_url(img):
+def array_to_data_url(img, dtype=None):
+    if dtype is not None:
+        img = img.astype(dtype)
     pil_img = Image.fromarray(img)
     buff = BytesIO()
     pil_img.save(buff, format="png")
