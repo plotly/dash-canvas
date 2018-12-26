@@ -47,29 +47,22 @@ app.layout = html.Div([
     html.Div([
     html.H3(children='Manual correction of automatic segmentation'),
     dcc.Markdown('''
-        Annotate the picture to delineate boundaries between objects (in
-        split mode) or to join objects together (in merge mode), then press
-        the Save button to correct the segmentation.
+        Annotate the picture to delineate boundaries
+        between objects (in split mode)
+        or to join objects together (in merge mode),
+        then press the Save button to correct
+        the segmentation.
     '''),
+    html.H5(children='Annotations'),
     dcc.RadioItems(id='mode',
     options=[
         {'label': 'Merge objects', 'value': 'merge'},
         {'label': 'Split objects', 'value': 'split'},
     ],
     value='split',
-    labelStyle={'display': 'inline-block'}
+    # labelStyle={'display': 'inline-block'}
     ),
-    dash_canvas.DashCanvas(
-        id='canvas',
-        label='my-label',
-        width=canvas_width,
-	height=canvas_height,
-        scale=scale,
-        lineWidth=2,
-        lineColor='red',
-        image_content=array_to_data_url(overlay),
-    ),
-     ], className="six columns"),
+    html.H5(children='Save segmentation'),
     dcc.RadioItems(id='save-mode',
     options=[
         {'label': 'png', 'value': 'png'},
@@ -86,7 +79,21 @@ app.layout = html.Div([
         target="_blank"
     ),
     dcc.Store(id='cache', data=''),
-    ])
+
+    ], className="four columns"),
+    html.Div([
+    dash_canvas.DashCanvas(
+        id='canvas',
+        label='my-label',
+        width=canvas_width,
+	height=canvas_height,
+        scale=scale,
+        lineWidth=2,
+        lineColor='red',
+        image_content=array_to_data_url(overlay),
+    ),
+     ], className="six columns"),
+       ])
 
 # ----------------------- Callbacks -----------------------------
 @app.callback(Output('cache', 'data'),
