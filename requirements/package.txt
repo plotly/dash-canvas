@@ -3,4 +3,5 @@ dash
 numpy
 scikit-image
 scikit-learn
+Pillow
 pyamg
