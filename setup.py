@@ -18,5 +18,5 @@ setup(
     include_package_data=True,
     license=package['license'],
     description=package['description'] if 'description' in package else package_name,
-    install_requires=['dash', 'dash-html-components']
+    install_requires=['dash', 'dash-html-components, scikit-image']
 )
