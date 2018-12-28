@@ -22,18 +22,18 @@ jobs:
                   command: echo $CIRCLE_JOB > circlejob.txt
 
             - restore_cache:
-                  key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}-{{ checksum ".circleci/config.yml" }}-{{ checksum "circlejob.txt" }}
+                  key: deps1-{{ .Branch }}-{{ checksum "requirements/package.txt" }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}-{{ checksum ".circleci/config.yml" }}-{{ checksum "circlejob.txt" }}
 
             - run:
                   name: Install dependencies
                   command: |
                       sudo pip install virtualenv --upgrade
                       . venv/bin/activate
-                      pip install -r requirements.txt
+                      pip install -r requirements/package.txt
                       npm install --ignore-scripts
 
             - save_cache:
-                  key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}-{{ checksum ".circleci/config.yml" }}-{{ checksum "circlejob.txt" }}
+                  key: deps1-{{ .Branch }}-{{ checksum "requirements/package.txt" }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}-{{ checksum ".circleci/config.yml" }}-{{ checksum "circlejob.txt" }}
                   paths:
                       - 'venv'
                       - 'node_modules'
@@ -52,8 +52,7 @@ jobs:
                       . venv/bin/activate
                       python --version
                       pwd
-                      pytest tests/test_parse_json.py
-                      pytest tests/test_image_processing_utils.py
+                      pytest dash_canvas
 
 
 workflows:
