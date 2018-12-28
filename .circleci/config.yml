@@ -45,6 +45,7 @@ jobs:
                       . venv/bin/activate
                       npm run build:js
                       npm run build:py
+                      python3 setup.py develop --user
 
             - run:
                   name: Run tests
