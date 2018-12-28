@@ -74,11 +74,15 @@ export default class DashCanvas extends Component {
       } else {
         value = this.state.value;
       }
+      var toolsArray = {};
+      toolsArray["pencil"] = Tools.Pencil;
+      toolsArray["pan"] = Tools.Pan;
+      toolsArray["circle"] = Tools.Circle;
         return (
 		<div className={this.props.className}>
 	    	<SketchField name='sketch'
                          ref={(c) => this._sketch = c}
-                         tool={Tools.Pencil}
+                         tool={toolsArray[this.props.tool.toLowerCase()]}
                          lineColor={this.props.lineColor}
 			 width={this.props.width}
 			 height={this.props.height}
@@ -99,7 +103,7 @@ export default class DashCanvas extends Component {
 DashCanvas.defaultProps = {filename:'', 
 			   json_data:'', image_content:'', trigger:0,
 			   width:500, height:500, scale:1, lineWidth:20,
-			   lineColor:'yellow'};
+			   lineColor:'yellow', tool:"pencil"};
 
 DashCanvas.propTypes = {
     /**
@@ -136,6 +140,11 @@ DashCanvas.propTypes = {
      * Scaling factor of image
      */
     scale: PropTypes.number,
+ 
+    /**
+     * Selection or drawing tool
+     */
+    tool: PropTypes.string,
  
     /**
      * Width of drawing line
