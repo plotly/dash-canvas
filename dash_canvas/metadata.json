@@ -84,6 +84,17 @@
           "computed": false
         }
       },
+      "tool": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "Selection or drawing tool",
+        "defaultValue": {
+          "value": "\"pencil\"",
+          "computed": false
+        }
+      },
       "lineWidth": {
         "type": {
           "name": "number"

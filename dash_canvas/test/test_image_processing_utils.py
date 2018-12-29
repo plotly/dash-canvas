@@ -1,4 +1,5 @@
-from image_processing_utils import watershed_segmentation, modify_segmentation
+from dash_canvas.utils.image_processing_utils import (
+            watershed_segmentation, modify_segmentation)
 from skimage import data, segmentation, morphology, measure
 import numpy as np
 from scipy import ndimage

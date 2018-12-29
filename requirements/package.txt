@@ -1,0 +1,7 @@
+# dash is required to call `build:py`
+dash
+numpy
+scikit-image
+scikit-learn
+Pillow
+pyamg

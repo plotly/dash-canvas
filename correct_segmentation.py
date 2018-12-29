@@ -11,9 +11,9 @@ import dash_html_components as html
 import dash_core_components as dcc
 import plotly.graph_objs as go
 
-from parse_json import parse_jsonstring
-from io_utils import image_string_to_PILImage, array_to_data_url
-from image_processing_utils import modify_segmentation
+from dash_canvas.utils.parse_json import parse_jsonstring
+from dash_canvas.utils.io_utils import image_string_to_PILImage, array_to_data_url
+from dash_canvas.utils.image_processing_utils import modify_segmentation
 
 # Image to segment and shape parameters
 filename = 'https://upload.wikimedia.org/wikipedia/commons/1/1b/HumanChromosomesChromomycinA3.jpg'
@@ -62,6 +62,15 @@ app.layout = html.Div([
     value='split',
     # labelStyle={'display': 'inline-block'}
     ),
+    html.H5(children='Tool'),
+    dcc.RadioItems(id='tool',
+    options=[
+        {'label': 'Pencil', 'value': 'pencil'},
+        {'label': 'Pan', 'value': 'pan'},
+    ],
+    value='pencil',
+    ),
+
     html.H5(children='Save segmentation'),
     dcc.RadioItems(id='save-mode',
     options=[
@@ -109,6 +118,8 @@ def update_segmentation(toggle, string, s, h, w, children, mode):
         labs = labels
     else:
         labs = np.asarray(children)
+    with open('data.json', 'w') as fp:
+        json.dump(string, fp)
     mask = parse_jsonstring(string, shape=(height, width))
     new_labels = modify_segmentation(labs, mask, img=img, mode=mode)
     return new_labels
@@ -142,6 +153,12 @@ def save_segmentation(labs, save_mode):
         color_labels = color.label2rgb(new_labels)
         uri = array_to_data_url(new_labels, dtype=np.uint8)
         return uri
+
+@app.callback(Output('canvas', 'tool'),
+              [Input('tool', 'value')])
+def change_tool(tool_value):
+    return tool_value
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
