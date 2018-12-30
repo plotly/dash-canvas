@@ -60,6 +60,7 @@ def image_with_contour(img, labels, shape=None):
     fig = go.Figure(data=[cont], layout=layout)
     return fig
 
+
 if __name__ == '__main__':
     from skimage import data
     import plotly.plotly as py

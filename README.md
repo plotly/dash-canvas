@@ -1,9 +1,13 @@
 # dash-canvas
 
-dash-canvas is a Dash component for drawing on a background image, and
-selecting regions of the image.
+dash-canvas is a package for image processing with 
+[Dash](https://dash.plot.ly/). It provides a Dash component for
+annotating images, as well as utility functions for using such
+annotations for various image processing tasks. 
 
-Try out the [demo app here](http://dash-canvas.herokuapp.com/)
+Try out the 
+[demo app for object segmentation](http://dash-canvas.herokuapp.com/) or the
+[demo app for manual correction of segmentation](https://dash-canvas-separate.herokuapp.com/).
 
 Get started with:
 1. Install Dash and its dependencies: https://dash.plot.ly/installation

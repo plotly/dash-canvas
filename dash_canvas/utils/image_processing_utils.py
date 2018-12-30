@@ -4,6 +4,7 @@ from skimage import img_as_float
 from scipy import ndimage
 from sklearn.ensemble import RandomForestClassifier
 
+# ------------------- Modification of segmentation ----------------------
 
 def _split_labels(labels, mask, img):
     """
@@ -109,6 +110,9 @@ def modify_segmentation(labels, mask, img=None, mode='split'):
         print(mode)
         raise ValueError('mode should be either split or merge')
 
+
+# ------------- Segmentation from markers ----------------------------
+
 def watershed_segmentation(img, mask, sigma=4):
     """
     Watershed segmentation of image using annotations as label markers.
@@ -138,10 +142,7 @@ def watershed_segmentation(img, mask, sigma=4):
 
 def random_walker_segmentation(img, mask, beta=5000):
     """
-    Watershed segmentation of image using annotations as label markers.
-
-    The image used for the watershed is minus the gradient of the original
-    image, convoluted with a Gaussian for more robustness.
+    Random-walker segmentation of image using annotations as label markers.
 
     Parameters
     ----------
@@ -151,9 +152,21 @@ def random_walker_segmentation(img, mask, beta=5000):
     mask : ndarray of ints
         binary array, each connected component corresponds to a different
         object to be segmented
-    sigma : float
-        standard deviation of Gaussian convoluting the gradient. Increase
-        for smoother boundaries.
+    beta : float
+        beta parameter of random walker, smaller beta results in more compact
+        objects, larger beta in boundaries following gradients more
+        accurately.
+
+    Returns
+    -------
+
+    output : ndarray of ints
+        image of labels
+
+    Notes
+    -----
+
+    see skimage.segmentation.random_walker
     """
     if img.ndim > 2:
         img = color.rgb2gray(img)
@@ -179,31 +192,63 @@ def _compute_features_gabor(im):
 
 
 def random_forest_segmentation(img, mask, mode='gabor'):
+    """
+    Segmentation of image using machine learning. Annotations are used 
+    as training set for a random forest classifier. Features used for the
+    classification are Gabor or Daisy features.
+
+    Parameters
+    ----------
+
+    img : ndarray
+        Image to be segmented
+    mask : ndarray of ints
+        Binary array, each connected component corresponds to a different
+        object to be segmented
+    mode : string
+        Type of features used in classification, can be 'daisy' or 'gabor'.
+    """
     labels = measure.label(mask)
-    if mode=='daisy':
+    if mode == 'daisy':
         if img.ndim > 2:
             img = color.rgb2gray(img)
         radius = 15
         features = feature.daisy(img, step=1, radius=radius, rings=2,
-                                            histograms=4)
+                                 histograms=4)
         crop_labels = labels[radius:-radius, radius:-radius]
-    elif mode=='gabor':
+    elif mode == 'gabor':
         features = _compute_features_gabor(img)
         nb_ch, nb_fq, sh_1, sh_2 = features.shape
         features = features.reshape((nb_ch * nb_fq, sh_1, sh_2))
         features = np.moveaxis(features, 0, -1)
         crop_labels = labels
-    X_train = features[crop_labels >0, :]
-    Y_train=crop_labels[crop_labels>0]
+    X_train = features[crop_labels > 0, :]
+    Y_train = crop_labels[crop_labels > 0]
     rf = RandomForestClassifier(n_estimators=100)
     rf.fit(X_train, Y_train)
     output = rf.predict(features.reshape(-1, features.shape[2]))
     output = output.reshape(crop_labels.shape)
-    output[crop_labels>0] = crop_labels[crop_labels>0]
+    output[crop_labels > 0] = crop_labels[crop_labels > 0]
     return output
 
 
 def segmentation_generic(img, mask, mode='watershed'):
+    """
+    Segmentation of image using annotations as markers (seeds), using
+    different algorithms.
+
+    Parameters
+    ----------
+
+    img : ndarray
+        Image to be segmented
+    mask : ndarray of ints
+        Binary array, each connected component corresponds to a different
+        object to be segmented
+    mode : 'string', optional
+        Algorithm to be used, can be 'watershed', 'random_walker' or
+        'random_forest'.
+    """
     if mode=='watershed':
         return watershed_segmentation(img, mask)
     elif mode=='random_walker':

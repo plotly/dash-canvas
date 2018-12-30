@@ -100,7 +100,7 @@ export default class DashCanvas extends Component {
 
 }
 
-DashCanvas.defaultProps = {filename:'', label:''
+DashCanvas.defaultProps = {filename:'', label:'',
 			   json_data:'', image_content:'', trigger:0,
 			   width:500, height:500, scale:1, lineWidth:20,
 			   lineColor:'yellow', tool:"pencil"};
