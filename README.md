@@ -13,7 +13,7 @@ Get started with:
 1. Install `dash_canvas`: `pip install dash-canvas` (you will also need
    `dash-core-components` to run the apps).
 2. Run `python app_seg.py` (for interactive segmentation) or 
-   `python correct_segmentation.py`` (for correcting a pre-existing
+   `python correct_segmentation.py` (for correcting a pre-existing
    segmentation)
 3. Visit http://localhost:8050 in your web browser
 
