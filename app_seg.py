@@ -11,10 +11,10 @@ import dash_html_components as html
 import dash_core_components as dcc
 import plotly.graph_objs as go
 
-from parse_json import parse_jsonstring
-from image_processing_utils import segmentation_generic
-from plot_utils import image_with_contour
-from io_utils import image_string_to_PILImage
+from dash_canvas.utils.parse_json import parse_jsonstring
+from dash_canvas.utils.image_processing_utils import segmentation_generic
+from dash_canvas.utils.plot_utils import image_with_contour
+from dash_canvas.utils.io_utils import image_string_to_PILImage
 
 # Image to segment and shape parameters
 filename = 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Mitochondria%2C_mammalian_lung_-_TEM_%282%29.jpg'
