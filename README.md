@@ -9,6 +9,8 @@ Try out the
 [demo app for object segmentation](http://dash-canvas.herokuapp.com/) or the
 [demo app for manual correction of segmentation](https://dash-canvas-separate.herokuapp.com/).
 
+![Demo](doc/segmentation.gif)
+
 Get started with:
 1. Install `dash_canvas`: `pip install dash-canvas` (you will also need
    `dash-core-components` to run the apps).
