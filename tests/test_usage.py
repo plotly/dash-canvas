@@ -4,7 +4,7 @@ def test_render_component(dash_app, selenium):
     # dash_app is a fixture by pytest-dash
     # It will load a py file containing a Dash instance named `app`
     # and start it in a thread.
-    app = dash_app('usage.py')
+    app = dash_app('correct_segmentation.py')
 
     # Get the generated component with selenium
-    my_component = selenium.find_element_by_id('input')
+    # my_component = selenium.find_element_by_id('input')
