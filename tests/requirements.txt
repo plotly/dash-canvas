@@ -13,3 +13,4 @@ selenium
 flake8
 pylint
 pytest-dash
+pytest-cookies
