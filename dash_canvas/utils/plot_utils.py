@@ -3,6 +3,7 @@ import PIL
 import numpy as np
 from skimage import color, img_as_ubyte
 
+
 def image_with_contour(img, labels, shape=None):
     """
     Figure with contour plot of labels superimposed on background image.

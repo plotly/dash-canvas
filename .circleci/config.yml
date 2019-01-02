@@ -51,9 +51,16 @@ jobs:
                   name: Run tests
                   command: |
                       . venv/bin/activate
-                      python --version
-                      pwd
                       pytest dash_canvas
+            
+            - run:
+                  name: Run usage tests
+                  command: |
+                      . venv/bin/activate
+                      pip install -r tests/requirements.txt
+                      pytest --driver chrome tests
+
+
 
 
 workflows:
