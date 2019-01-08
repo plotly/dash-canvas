@@ -6,7 +6,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 # ------------------- Modification of segmentation ----------------------
 
-def _split_labels(labels, mask, img):
+def _split_labels(labels, mask, img, erosion_width=10, compactness=0):
     """
     Divide already labeled array ``labels`` according to array of annotations
     ``mask``.
@@ -20,6 +20,14 @@ def _split_labels(labels, mask, img):
         Array with annotations.
     img : array, default None
         Image used for the segmentation.
+    erosion_width : int, optional
+        Number of pixels to erode on both sides of annotations. Decrease if
+        boundaries should correspond to the exact annotations, increase if
+        boundaries should rather follow strong image gradients.
+    compactness : float, optional (default 0)
+        Parameter of the compact waterhsed algorithm
+        ``skimage.segmentation.watershed``, should be zero (for normal
+        watershed) or greater than zero (for compact watershed).
     """
     out = np.copy(labels)
     bounding_boxes = ndimage.find_objects(labels)
@@ -38,13 +46,15 @@ def _split_labels(labels, mask, img):
         gradient_img = - ndimage.gaussian_gradient_magnitude(img_box, 2)
         mask_box = np.ones(img_box.shape, dtype=np.uint8)
         mask_box[mask[box] == annot_index] = 0
-        mask_box = morphology.binary_erosion(mask_box, morphology.disk(1))
+        mask_box = morphology.binary_erosion(mask_box,
+                                             morphology.disk(erosion_width))
         masked_region = labels_box == obj_label
         mask_box[np.logical_not(masked_region)] = 0
         mask_box = measure.label(mask_box)
         res = segmentation.watershed(gradient_img, mask_box,
-                                                mask=masked_region)
-        out[box][res == 1] = count # only modify one of the regions
+                                     compactness=compactness,
+                                     mask=masked_region)
+        out[box][res == 1] = count  # only modify one of the regions
         count += 1
     return out
 
