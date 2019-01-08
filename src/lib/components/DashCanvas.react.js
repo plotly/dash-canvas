@@ -14,6 +14,9 @@ export default class DashCanvas extends Component {
     };
     this._save = this._save.bind(this);
     this._undo = this._undo.bind(this);
+    this._zoom = this._zoom.bind(this);
+    this._zoom_factor = this._zoom_factor.bind(this);
+    this._unzoom = this._unzoom.bind(this);
   } 
 
 
@@ -27,6 +30,7 @@ export default class DashCanvas extends Component {
 	}
     if (this.props.image_content.length > 0){
 	let sketch = this._sketch;
+	sketch.clear()
 	let opts = {left:0,
 		    top:0,
 		    scale:this.props.scale}
@@ -35,21 +39,27 @@ export default class DashCanvas extends Component {
 
     }
 
+
     componentDidUpdate(prevProps) {
     let sketch = this._sketch;
     // Typical usage (don't forget to compare props):
-    if ( 
+    if (
 	(this.props.image_content !== prevProps.image_content)){
 	sketch.clear();
 	this.props.setProps({json_data: ''});
 	let opts = {left:0,
-		    top:0,
-		    scale:this.props.scale}
+	 	    top:0,
+	            scale:this.props.scale}
 	sketch.addImg(this.props.image_content, opts);
+	console.log("toggle zoom");
+	console.log(this.props.zoom);
+	this._zoom_factor(this.props.zoom);
+	let tmp_value = this.props.tmp + 1
+	this.props.setProps({tmp: tmp_value});
+    };
+    
     };
 
-
-    };
 
     _save() {
         let JSON_string = JSON.stringify(this._sketch.toJSON());
@@ -66,18 +76,37 @@ export default class DashCanvas extends Component {
         })
     };
 
+    _zoom_factor(factor){
+	console.log("called zoom");
+	console.log(this.props.zoom);
+	this._sketch.zoom(factor);
+	let zoom_factor = this.props.zoom;
+	this.props.setProps({zoom: factor*zoom_factor})
+    };
+    
+
+
+    _zoom(){
+	this._sketch.zoom(1.25);
+	let zoom_factor = this.props.zoom;
+	this.props.setProps({zoom: 1.25*zoom_factor})
+    };
+    
+    _unzoom(){
+	this._sketch.zoom(0.8);
+	let zoom_factor = this.props.zoom;
+	this.props.setProps({zoom: 0.8*zoom_factor})
+    };
+
+
 
     render() {
-	let value;
-      if (this.props.setProps) {
-        value = this.props.value;
-      } else {
-        value = this.state.value;
-      }
+      console.log("rendered");
       var toolsArray = {};
       toolsArray["pencil"] = Tools.Pencil;
       toolsArray["pan"] = Tools.Pan;
       toolsArray["circle"] = Tools.Circle;
+      toolsArray["select"] = Tools.Select;
         return (
 		<div className={this.props.className}>
 	    	<SketchField name='sketch'
@@ -88,8 +117,8 @@ export default class DashCanvas extends Component {
 			 height={this.props.height}
                          lineWidth={this.props.lineWidth}/>
 		       <button onClick={(e) => this._undo()}> Undo </button>
-		       <button onClick={(e) => this._sketch.zoom(1.25)}> Zoom </button>
-		       <button onClick={(e) => this._sketch.zoom(0.8)}> Unzoom </button>
+		       <button onClick={(e) => this._zoom()}> Zoom </button>
+		       <button onClick={(e) => this._unzoom()}> Unzoom </button>
 		       <button onClick={(e) => this._save()}> Save </button>
 		</div>
 	    
@@ -102,8 +131,9 @@ export default class DashCanvas extends Component {
 
 DashCanvas.defaultProps = {filename:'', label:'',
 			   json_data:'', image_content:'', trigger:0,
+			   tmp:0,
 			   width:500, height:500, scale:1, lineWidth:20,
-			   lineColor:'yellow', tool:"pencil"};
+			   lineColor:'yellow', tool:"pencil", zoom:1};
 
 DashCanvas.propTypes = {
     /**
@@ -123,6 +153,12 @@ DashCanvas.propTypes = {
     image_content: PropTypes.string,
  
     /**
+     * Zoom factor
+     */
+    zoom: PropTypes.number,
+ 
+
+    /**
      * Width of the canvas
      */
     width: PropTypes.number,
@@ -138,7 +174,8 @@ DashCanvas.propTypes = {
     scale: PropTypes.number,
  
     /**
-     * Selection of drawing tool, among ["pencil", "pan", "circle"].
+     * Selection of drawing tool, among ["pencil", "pan", "circle",
+     * "select"].
      */
     tool: PropTypes.string,
  
@@ -156,6 +193,13 @@ DashCanvas.propTypes = {
      * Name of image file to load (URL string)
      */
     filename: PropTypes.string,
+
+    /**
+     * Counter of how many times the save button was pressed
+     * (to be used mostly as input)
+     */
+    tmp: PropTypes.number,
+    
 
     /**
      * Counter of how many times the save button was pressed
