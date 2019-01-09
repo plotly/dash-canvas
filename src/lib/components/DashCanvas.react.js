@@ -185,7 +185,9 @@ DashCanvas.propTypes = {
     lineWidth: PropTypes.number,
 
     /**
-     * Color of drawing line (in pencil mode)
+     * Color of drawing line (in pencil mode). Can be a text string,
+     * like 'yellow', 'red', or a color triplet like 'rgb(255, 0, 0)'.
+     * Alpha is possible with 'rgba(255, 0, 0, 0.5)'.
      */
     lineColor: PropTypes.string,
 
