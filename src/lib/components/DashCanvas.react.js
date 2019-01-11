@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {SketchField, Tools} from 'react-sketch';
 
 
+
 /**
  * Canvas component for drawing on a background image and selecting
  * regions.
@@ -51,14 +52,14 @@ export default class DashCanvas extends Component {
 	 	    top:0,
 	            scale:this.props.scale}
 	sketch.addImg(this.props.image_content, opts);
-	console.log("toggle zoom");
-	console.log(this.props.zoom);
-	this._zoom_factor(this.props.zoom);
+	sketch.zoom(this.props.zoom)
 	let tmp_value = this.props.tmp + 1
 	this.props.setProps({tmp: tmp_value});
     };
     
     };
+
+
 
 
     _save() {
@@ -78,10 +79,10 @@ export default class DashCanvas extends Component {
 
     _zoom_factor(factor){
 	console.log("called zoom");
-	console.log(this.props.zoom);
 	this._sketch.zoom(factor);
 	let zoom_factor = this.props.zoom;
 	this.props.setProps({zoom: factor*zoom_factor})
+	console.log(this.props.zoom);
     };
     
 
@@ -91,13 +92,13 @@ export default class DashCanvas extends Component {
 	let zoom_factor = this.props.zoom;
 	this.props.setProps({zoom: 1.25*zoom_factor})
     };
-    
+   
+
     _unzoom(){
 	this._sketch.zoom(0.8);
 	let zoom_factor = this.props.zoom;
 	this.props.setProps({zoom: 0.8*zoom_factor})
     };
-
 
 
     render() {
@@ -115,6 +116,7 @@ export default class DashCanvas extends Component {
                          lineColor={this.props.lineColor}
 			 width={this.props.width}
 			 height={this.props.height}
+			 forceValue={true}
                          lineWidth={this.props.lineWidth}/>
 		       <button onClick={(e) => this._undo()}> Undo </button>
 		       <button onClick={(e) => this._zoom()}> Zoom </button>
