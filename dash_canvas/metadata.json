@@ -162,17 +162,6 @@
           "computed": false
         }
       },
-      "tmp": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": "Counter of how many times the save button was pressed\n(to be used mostly as input)",
-        "defaultValue": {
-          "value": "0",
-          "computed": false
-        }
-      },
       "trigger": {
         "type": {
           "name": "number"

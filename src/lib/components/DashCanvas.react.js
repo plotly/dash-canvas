@@ -52,9 +52,7 @@ export default class DashCanvas extends Component {
 	 	    top:0,
 	            scale:this.props.scale}
 	sketch.addImg(this.props.image_content, opts);
-	sketch.zoom(this.props.zoom)
-	let tmp_value = this.props.tmp + 1
-	this.props.setProps({tmp: tmp_value});
+	sketch._fc.setZoom(this.props.zoom);
     };
     
     };
@@ -133,7 +131,6 @@ export default class DashCanvas extends Component {
 
 DashCanvas.defaultProps = {filename:'', label:'',
 			   json_data:'', image_content:'', trigger:0,
-			   tmp:0,
 			   width:500, height:500, scale:1, lineWidth:20,
 			   lineColor:'yellow', tool:"pencil", zoom:1};
 
@@ -198,12 +195,6 @@ DashCanvas.propTypes = {
      */
     filename: PropTypes.string,
 
-    /**
-     * Counter of how many times the save button was pressed
-     * (to be used mostly as input)
-     */
-    tmp: PropTypes.number,
-    
 
     /**
      * Counter of how many times the save button was pressed
