@@ -1,2 +1,2 @@
-web: gunicorn app_seg:server
-manual: gunicorn correct_segmentation:server
+web: gunicorn correct_segmentation:server
+manuel: gunicorn app_seg:server
