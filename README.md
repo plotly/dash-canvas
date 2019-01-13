@@ -6,8 +6,8 @@ annotating images, as well as utility functions for using such
 annotations for various image processing tasks. 
 
 Try out the 
-[demo app for object segmentation](http://dash-canvas.herokuapp.com/) or the
-[demo app for manual correction of segmentation](https://dash-canvas-separate.herokuapp.com/).
+[demo app for object segmentation](http://dash-canvas.herokuapp.com/app1) or the
+[demo app for manual correction of segmentation](https://dash-canvas.herokuapp.com/app2).
 
 <p style="text-align:center;"><img src="doc/segmentation.gif" alt="Segmentation app" width="65%"></p>
 
