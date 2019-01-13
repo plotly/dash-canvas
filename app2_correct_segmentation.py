@@ -15,6 +15,8 @@ from dash_canvas.utils.parse_json import parse_jsonstring
 from dash_canvas.utils.io_utils import image_string_to_PILImage, array_to_data_url
 from dash_canvas.utils.image_processing_utils import modify_segmentation
 
+from app import app
+
 # Image to segment and shape parameters
 filename = 'https://upload.wikimedia.org/wikipedia/commons/1/1b/HumanChromosomesChromomycinA3.jpg'
 img = io.imread(filename, as_gray=True)
@@ -29,21 +31,12 @@ height, width = img.shape[:2]
 canvas_width = 500
 canvas_height = round(height * canvas_width / width)
 scale = canvas_width / width
-print(scale, canvas_height)
 
 # ------------------ App definition ---------------------
 
-app = dash.Dash(__name__)
-
-server = app.server
-
-app.css.append_css({
-    'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
-})
 
 
-
-app.layout = html.Div([
+layout = html.Div([
     html.Div([
     html.H3(children='Manual correction of automatic segmentation'),
     dcc.Markdown('''
@@ -92,7 +85,7 @@ app.layout = html.Div([
     ], className="four columns"),
     html.Div([
     dash_canvas.DashCanvas(
-        id='canvas',
+        id='canvas_',
         label='my-label',
         width=canvas_width,
 	height=canvas_height,
@@ -106,11 +99,11 @@ app.layout = html.Div([
 
 # ----------------------- Callbacks -----------------------------
 @app.callback(Output('cache', 'data'),
-             [Input('canvas', 'trigger'),],
-             [State('canvas', 'json_data'),
-              State('canvas', 'scale'),
-              State('canvas', 'height'),
-	      State('canvas', 'width'),
+             [Input('canvas_', 'trigger'),],
+             [State('canvas_', 'json_data'),
+              State('canvas_', 'scale'),
+              State('canvas_', 'height'),
+	      State('canvas_', 'width'),
               State('cache', 'data'),
               State('mode', 'value')])
 def update_segmentation(toggle, string, s, h, w, children, mode):
@@ -125,7 +118,7 @@ def update_segmentation(toggle, string, s, h, w, children, mode):
     return new_labels
 
 
-@app.callback(Output('canvas', 'image_content'),
+@app.callback(Output('canvas_', 'image_content'),
              [Input('cache', 'data')])
 def update_figure(labs):
     new_labels = np.array(labs)
@@ -154,7 +147,7 @@ def save_segmentation(labs, save_mode):
         uri = array_to_data_url(new_labels, dtype=np.uint8)
         return uri
 
-@app.callback(Output('canvas', 'tool'),
+@app.callback(Output('canvas_', 'tool'),
               [Input('tool', 'value')])
 def change_tool(tool_value):
     return tool_value

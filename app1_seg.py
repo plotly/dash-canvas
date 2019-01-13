@@ -16,6 +16,8 @@ from dash_canvas.utils.image_processing_utils import segmentation_generic
 from dash_canvas.utils.plot_utils import image_with_contour
 from dash_canvas.utils.io_utils import image_string_to_PILImage
 
+from app import app
+
 # Image to segment and shape parameters
 filename = 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Mitochondria%2C_mammalian_lung_-_TEM_%282%29.jpg'
 img = io.imread(filename, as_gray=True)
@@ -26,7 +28,7 @@ scale = canvas_width / width
 
 
 # ------------------ App definition ---------------------
-
+"""
 app = dash.Dash(__name__)
 
 server = app.server
@@ -34,10 +36,10 @@ server = app.server
 app.css.append_css({
     'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
 })
+"""
 
 
-
-app.layout = html.Div([
+layout = html.Div([
     html.Div([
     html.Div([
     html.H2(children='Segmentation tool'),
