@@ -30,26 +30,28 @@ def image_with_contour(img, labels, shape=None):
     labels = labels.astype(np.float)
     # Contour plot of segmentation
     cont = go.Contour(z=labels[::-1],
-            contours=dict(coloring='lines',),
-            line=dict(width=3)
+            contours=dict(coloring='lines'),
+            line=dict(width=3),
+            showscale=False,
             )
     # Layout
     layout= go.Layout(
-            images= [dict(
+            images = [dict(
                   source=img,
-                  xref= "x",
-                  yref= "y",
-                  x= 0,
-                  y= sh_y,
-                  sizex= sh_x,
-                  sizey= sh_y,
-                  sizing= "contain",
-                  layer= "below")],
+                  xref="x",
+                  yref="y",
+                  x=0,
+                  y=sh_y,
+                  sizex=sh_x,
+                  sizey=sh_y,
+                  sizing="contain",
+                  layer="below")],
             xaxis=dict(
                   showgrid=False,
                   zeroline=False,
                   showline=False,
                   ticks='',
+                  showticklabels=False,
                   ),
             yaxis=dict(
                   showgrid=False,
@@ -57,6 +59,7 @@ def image_with_contour(img, labels, shape=None):
                   showline=False,
                   scaleanchor="x",
                   ticks='',
+                  showticklabels=False,
     ))
     fig = go.Figure(data=[cont], layout=layout)
     return fig

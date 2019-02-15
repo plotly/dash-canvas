@@ -3,7 +3,6 @@ import json
 from skimage import io
 from PIL import Image
 
-
 import dash_canvas
 import dash
 from dash.dependencies import Input, Output, State
@@ -12,27 +11,27 @@ import dash_core_components as dcc
 import plotly.graph_objs as go
 
 from dash_canvas.utils.parse_json import parse_jsonstring
-from dash_canvas.utils.image_processing_utils import segmentation_generic
+from dash_canvas.utils.image_processing_utils import \
+                                        superpixel_color_segmentation
 from dash_canvas.utils.plot_utils import image_with_contour
-from dash_canvas.utils.io_utils import image_string_to_PILImage
+from dash_canvas.utils.io_utils import image_string_to_PILImage, \
+                                       array_to_data_url
+
 
 # Image to segment and shape parameters
-filename = 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Mitochondria%2C_mammalian_lung_-_TEM_%282%29.jpg'
-img = io.imread(filename, as_gray=True)
-height, width = img.shape
+filename = './assets/dress.jpg'
+img = io.imread(filename)
+height, width, _ = img.shape
 canvas_width = 500
 canvas_height = round(height * canvas_width / width)
 scale = canvas_width / width
 
 
-# ------------------ App definition ---------------------
-
 def title():
-    return "Supervized segmentation"
-
+    return "Background removal"
 
 def description():
-    return "Segmentation of objects from annotations"
+    return "Remove background of image to extract objects of interest."
 
 
 layout = html.Div([
@@ -46,15 +45,15 @@ layout = html.Div([
     '''),
 
      dash_canvas.DashCanvas(
-        id='canvas',
+        id='canvas-bg',
         label='my-label',
         width=canvas_width,
-	    height=canvas_height,
+	height=canvas_height,
         scale=scale,
         filename=filename,
     ),
     dcc.Upload(
-		id='upload-image',
+		id='upload-image-bg',
 		children=[
 		    'Drag and Drop or ',
 		    html.A('Select an Image')
@@ -71,7 +70,7 @@ layout = html.Div([
 		accept='image/*',
 	    ),
     dcc.Dropdown(
-        id='algorithm',
+        id='algorithm-bg',
         options=[
             {'label': 'Watershed', 'value': 'watershed'},
             {'label': 'Random Walker', 'value': 'random_walker'},
@@ -82,24 +81,25 @@ layout = html.Div([
      ], className="six columns"),
     html.Div([
     html.H2(children='Segmentation result'),
-    dcc.Graph(
-        id='segmentation',
-        figure=image_with_contour(img, img>0, shape=(height, width))
-	)
+    html.Img(id='segmentation-bg', src=array_to_data_url(img), width=canvas_width)
+    #dcc.Graph(
+    #    id='segmentation-bg',
+    #    figure=image_with_contour(img, img>0, shape=(height, width))
+    #	)
     ], className="six columns")],# Div
 	className="row")
     ])
 
 # ----------------------- Callbacks -----------------------------
-
 def callbacks(app):
-    @app.callback(Output('segmentation', 'figure'),
-                [Input('canvas', 'image_content'),
-                Input('canvas', 'json_data'),
-                Input('canvas', 'height')],
-                [State('canvas', 'scale'),
-                State('canvas', 'width'),
-                State('algorithm', 'value')])
+
+    @app.callback(Output('segmentation-bg', 'src'),
+                [Input('canvas-bg', 'image_content'),
+                Input('canvas-bg', 'json_data'),
+                Input('canvas-bg', 'height')],
+                [State('canvas-bg', 'scale'),
+                State('canvas-bg', 'width'),
+                State('algorithm-bg', 'value')])
     def update_figure_upload(image, string, h, s, w, algorithm):
         mask = parse_jsonstring(string, shape=(round(h/s), round(w/s)))
         if mask.sum() > 0:
@@ -109,17 +109,20 @@ def callbacks(app):
             else:
                 im = image_string_to_PILImage(image)
                 im = np.asarray(im)
-            seg = segmentation_generic(im, mask, mode=algorithm)
+            seg = superpixel_color_segmentation(im, mask)
         else:
             if image is None:
                 image = img
-            seg = np.zeros((h, w))
-        return image_with_contour(image, seg, shape=(round(h/s), round(w/s)))
+            seg = np.ones((h, w))
+        fill_value = 255 * np.ones(3, dtype=np.uint8)
+        dat = np.copy(img)
+        dat[np.logical_not(seg)] = fill_value
+        return array_to_data_url(dat)
 
 
 
-    @app.callback(Output('canvas', 'image_content'),
-                [Input('upload-image', 'contents')])
+    @app.callback(Output('canvas-bg', 'image_content'),
+                [Input('upload-image-bg', 'contents')])
     def update_canvas_upload(image_string):
         if image_string is None:
             raise ValueError
@@ -129,10 +132,10 @@ def callbacks(app):
             return None
 
 
-    @app.callback(Output('canvas', 'height'),
-                [Input('upload-image', 'contents')],
-                [State('canvas', 'width'),
-                State('canvas', 'height')])
+    @app.callback(Output('canvas-bg', 'height'),
+                [Input('upload-image-bg', 'contents')],
+                [State('canvas-bg', 'width'),
+                State('canvas-bg', 'height')])
     def update_canvas_upload_shape(image_string, w, h):
         if image_string is None:
             raise ValueError
@@ -145,8 +148,8 @@ def callbacks(app):
             return canvas_height
 
 
-    @app.callback(Output('canvas', 'scale'),
-                [Input('upload-image', 'contents')])
+    @app.callback(Output('canvas-bg', 'scale'),
+                [Input('upload-image-bg', 'contents')])
     def update_canvas_upload_scale(image_string):
         if image_string is None:
             raise ValueError
