@@ -16,7 +16,7 @@ from dash_canvas.utils.image_processing_utils import \
 from dash_canvas.utils.plot_utils import image_with_contour
 from dash_canvas.utils.io_utils import image_string_to_PILImage, \
                                        array_to_data_url
-
+from dash_canvas.components import image_upload_zone
 
 # Image to segment and shape parameters
 filename = './assets/dress.jpg'
@@ -36,59 +36,29 @@ def description():
 
 layout = html.Div([
     html.Div([
-    html.Div([
-    html.H2(children='Segmentation tool'),
-    dcc.Markdown('''
-        Draw on the picture to annotate each object 
-	you want to segment, then press the Save button 
-	to trigger the segmentation.
-    '''),
-
-     dash_canvas.DashCanvas(
-        id='canvas-bg',
-        label='my-label',
-        width=canvas_width,
-	height=canvas_height,
-        scale=scale,
-        filename=filename,
-    ),
-    dcc.Upload(
-		id='upload-image-bg',
-		children=[
-		    'Drag and Drop or ',
-		    html.A('Select an Image')
-		],
-		style={
-		    'width': '100%',
-		    'height': '50px',
-		    'lineHeight': '50px',
-		    'borderWidth': '1px',
-		    'borderStyle': 'dashed',
-		    'borderRadius': '5px',
-		    'textAlign': 'center'
-		},
-		accept='image/*',
-	    ),
-    dcc.Dropdown(
-        id='algorithm-bg',
-        options=[
-            {'label': 'Watershed', 'value': 'watershed'},
-            {'label': 'Random Walker', 'value': 'random_walker'},
-            {'label': 'Random Forest', 'value': 'random_forest'}
-        ],
-        value='watershed'
-    ),
-     ], className="six columns"),
-    html.Div([
-    html.H2(children='Segmentation result'),
-    html.Img(id='segmentation-bg', src=array_to_data_url(img), width=canvas_width)
-    #dcc.Graph(
-    #    id='segmentation-bg',
-    #    figure=image_with_contour(img, img>0, shape=(height, width))
-    #	)
-    ], className="six columns")],# Div
-	className="row")
-    ])
+        html.Div([
+            html.H2(children='Remove image background'),
+            dcc.Markdown('''
+             Draw on the object of interest, and press Save to remove
+             background.'''),
+            dash_canvas.DashCanvas(
+                id='canvas-bg',
+                label='my-label',
+                width=canvas_width,
+                height=canvas_height,
+                scale=scale,
+                filename=filename,
+            ),
+            image_upload_zone('upload-image-bg'),
+        ], className="six columns"),
+        html.Div([
+            html.H3(children='Image without background'),
+            html.Img(id='segmentation-bg',
+                     src=array_to_data_url(np.zeros_like(img)),
+                     width=canvas_width)
+        ], className="six columns")],
+        className="row")
+        ])
 
 # ----------------------- Callbacks -----------------------------
 def callbacks(app):
@@ -99,8 +69,8 @@ def callbacks(app):
                 Input('canvas-bg', 'height')],
                 [State('canvas-bg', 'scale'),
                 State('canvas-bg', 'width'),
-                State('algorithm-bg', 'value')])
-    def update_figure_upload(image, string, h, s, w, algorithm):
+                ])
+    def update_figure_upload(image, string, h, s, w):
         mask = parse_jsonstring(string, shape=(round(h/s), round(w/s)))
         if mask.sum() > 0:
             if image is None:

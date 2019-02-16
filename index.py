@@ -11,7 +11,6 @@ import app1_seg as app1
 import app2_correct_segmentation as app2
 import app3_background_removal as app3
 
-from assets.app_wrapper import app_page_layout
 
 app = dash.Dash(__name__)
 server = app.server

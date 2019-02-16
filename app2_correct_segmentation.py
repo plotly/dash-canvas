@@ -104,6 +104,8 @@ layout = html.Div([
        ])
 
 # ----------------------- Callbacks -----------------------------
+
+
 def callbacks(app):
     @app.callback(Output('cache', 'data'),
                 [Input('canvas_', 'trigger'),],
