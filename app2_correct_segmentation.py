@@ -15,7 +15,6 @@ from dash_canvas.utils.parse_json import parse_jsonstring
 from dash_canvas.utils.io_utils import image_string_to_PILImage, array_to_data_url
 from dash_canvas.utils.image_processing_utils import modify_segmentation
 
-from app import app
 
 # Image to segment and shape parameters
 filename = 'https://upload.wikimedia.org/wikipedia/commons/1/1b/HumanChromosomesChromomycinA3.jpg'
@@ -34,6 +33,13 @@ scale = canvas_width / width
 
 # ------------------ App definition ---------------------
 
+
+def title():
+    return "Segmentation post-processing"
+
+
+def description():
+    return "Merge or separate labeled regions in order to improve an automatic segmentation"
 
 
 layout = html.Div([
@@ -55,15 +61,6 @@ layout = html.Div([
     value='split',
     # labelStyle={'display': 'inline-block'}
     ),
-    html.H5(children='Tool'),
-    dcc.RadioItems(id='tool',
-    options=[
-        {'label': 'Pencil', 'value': 'pencil'},
-        {'label': 'Pan', 'value': 'pan'},
-    ],
-    value='pencil',
-    ),
-
     html.H5(children='Save segmentation'),
     dcc.RadioItems(id='save-mode',
     options=[
@@ -98,60 +95,56 @@ layout = html.Div([
        ])
 
 # ----------------------- Callbacks -----------------------------
-@app.callback(Output('cache', 'data'),
-             [Input('canvas_', 'trigger'),],
-             [State('canvas_', 'json_data'),
-              State('canvas_', 'scale'),
-              State('canvas_', 'height'),
-	      State('canvas_', 'width'),
-              State('cache', 'data'),
-              State('mode', 'value')])
-def update_segmentation(toggle, string, s, h, w, children, mode):
-    if len(children) == 0:
-        labs = labels
-    else:
-        labs = np.asarray(children)
-    with open('data.json', 'w') as fp:
-        json.dump(string, fp)
-    mask = parse_jsonstring(string, shape=(height, width))
-    new_labels = modify_segmentation(labs, mask, img=img, mode=mode)
-    return new_labels
 
 
-@app.callback(Output('canvas_', 'image_content'),
-             [Input('cache', 'data')])
-def update_figure(labs):
-    new_labels = np.array(labs)
-    overlay = segmentation.mark_boundaries(img, new_labels)
-    overlay = img_as_ubyte(overlay)
-    return array_to_data_url(overlay)
+def callbacks(app):
+    @app.callback(Output('cache', 'data'),
+                [Input('canvas_', 'trigger'),],
+                [State('canvas_', 'json_data'),
+                State('canvas_', 'scale'),
+                State('canvas_', 'height'),
+                State('canvas_', 'width'),
+                State('cache', 'data'),
+                State('mode', 'value')])
+    def update_segmentation(toggle, string, s, h, w, children, mode):
+        print("updating")
+        if len(children) == 0:
+            labs = labels
+        else:
+            labs = np.asarray(children)
+        with open('data.json', 'w') as fp:
+            json.dump(string, fp)
+        mask = parse_jsonstring(string, shape=(height, width))
+        new_labels = modify_segmentation(labs, mask, img=img, mode=mode)
+        return new_labels
 
 
-@app.callback(Output('download-link', 'download'),
-              [Input('save-mode', 'value')])
-def download_name(save_mode):
-    if save_mode == 'png':
-        return 'correct_segmentation.png'
-    else:
-        return 'correct_segmentation.raw'
+    @app.callback(Output('canvas_', 'image_content'),
+                [Input('cache', 'data')])
+    def update_figure(labs):
+        new_labels = np.array(labs)
+        overlay = segmentation.mark_boundaries(img, new_labels)
+        overlay = img_as_ubyte(overlay)
+        return array_to_data_url(overlay)
 
 
-@app.callback(Output('download-link', 'href'),
-             [Input('cache', 'data')],
-             [State('save-mode', 'value')])
-def save_segmentation(labs, save_mode):
-    new_labels = np.array(labs)
-    np.save('labels.npy', new_labels)
-    if save_mode == 'png':
-        color_labels = color.label2rgb(new_labels)
-        uri = array_to_data_url(new_labels, dtype=np.uint8)
-        return uri
-
-@app.callback(Output('canvas_', 'tool'),
-              [Input('tool', 'value')])
-def change_tool(tool_value):
-    return tool_value
+    @app.callback(Output('download-link', 'download'),
+                [Input('save-mode', 'value')])
+    def download_name(save_mode):
+        if save_mode == 'png':
+            return 'correct_segmentation.png'
+        else:
+            return 'correct_segmentation.raw'
 
 
-if __name__ == '__main__':
-    app.run_server(debug=True)
+    @app.callback(Output('download-link', 'href'),
+                [Input('cache', 'data')],
+                [State('save-mode', 'value')])
+    def save_segmentation(labs, save_mode):
+        new_labels = np.array(labs)
+        np.save('labels.npy', new_labels)
+        if save_mode == 'png':
+            color_labels = color.label2rgb(new_labels)
+            uri = array_to_data_url(new_labels, dtype=np.uint8)
+            return uri
+

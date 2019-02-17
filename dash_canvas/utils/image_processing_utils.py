@@ -3,6 +3,7 @@ from skimage import segmentation, morphology, measure, color, feature, filters
 from skimage import img_as_float
 from scipy import ndimage
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
 
 # ------------------- Modification of segmentation ----------------------
 
@@ -267,3 +268,51 @@ def segmentation_generic(img, mask, mode='watershed'):
         return random_forest_segmentation(img, mask)
     else:
         raise NotImplementedError
+
+
+## -------------------- Background removal ----------------------------
+
+
+def superpixel_color_segmentation(im, mask, mode='bbox', remove_holes='all',
+        object='single'):
+    mask = mask[:im.shape[0], :im.shape[1]]
+    if mask.max() == 1:
+        mask = annotation_to_background_mask(mask, mode=mode)
+    px = segmentation.felzenszwalb(im, scale=4)
+    colors = np.stack([ndimage.mean(im[..., i], px,
+                       index=np.arange(0, px.max() + 1))
+                       for i in range(3)]).T
+    nb_phases = len(np.unique(mask)) - 1
+    indices = [np.unique(px[mask == i]) for i in range(1, nb_phases + 1)]
+    target = np.concatenate([(i + 1) * np.ones(len(indices[i]))
+                             for i in range(len(indices))])
+    training_set = np.vstack([colors[indices_i] for indices_i in indices])
+    clf = KNeighborsClassifier()
+    clf.fit(training_set, target)
+    res = clf.predict(colors)
+    res_img = res[px]
+    mask_res = res_img == 1
+    if object == 'single':
+        labels = measure.label(mask_res)
+        index = np.argmax(np.bincount(labels.ravel())[1:]) + 1
+        mask_res = labels == index
+
+    if remove_holes == 'all':
+        return ndimage.binary_fill_holes(mask_res)
+    elif np.isscalar(remove_holes):
+        return morphology.remove_small_holes(mask_res, remove_holes)
+
+
+def annotation_to_background_mask(mask_annotation, mode='bbox'):
+    mask = np.copy(mask_annotation).astype(np.uint8)
+    if mode == 'bbox':
+        sls = ndimage.find_objects(mask_annotation)[0]
+        mask[:int(0.9 * sls[0].start)] = 2
+        mask[int(1.1 * sls[0].stop):] = 2
+        mask[:, :int(0.9 * sls[1].start)] = 2
+        mask[:, int(1.1 * sls[1].stop):] = 2
+    if mode == 'cvxhull':
+        cvx = morphology.convex_hull_image(mask_annotation)
+        cvx = morphology.binary_dilation(cvx, np.ones((11, 11)))
+        mask[np.logical_not(cvx)] = 2
+    return mask

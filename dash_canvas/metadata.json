@@ -42,6 +42,20 @@
         "modifiers": [],
         "params": [],
         "returns": null
+      },
+      {
+        "name": "_pantool",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "_penciltool",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
       }
     ],
     "props": {
