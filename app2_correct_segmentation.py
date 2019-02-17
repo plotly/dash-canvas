@@ -61,15 +61,6 @@ layout = html.Div([
     value='split',
     # labelStyle={'display': 'inline-block'}
     ),
-    html.H5(children='Tool'),
-    dcc.RadioItems(id='tool',
-    options=[
-        {'label': 'Pencil', 'value': 'pencil'},
-        {'label': 'Pan', 'value': 'pan'},
-    ],
-    value='pencil',
-    ),
-
     html.H5(children='Save segmentation'),
     dcc.RadioItems(id='save-mode',
     options=[
@@ -156,10 +147,4 @@ def callbacks(app):
             color_labels = color.label2rgb(new_labels)
             uri = array_to_data_url(new_labels, dtype=np.uint8)
             return uri
-
-    @app.callback(Output('canvas_', 'tool'),
-                [Input('tool', 'value')])
-    def change_tool(tool_value):
-        return tool_value
-
 

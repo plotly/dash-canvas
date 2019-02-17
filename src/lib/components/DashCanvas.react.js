@@ -1,8 +1,26 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {SketchField, Tools} from 'react-sketch';
+import {ZoomMinusIcon, ZoomPlusIcon, EditIcon, PanIcon,
+	ArrowLeftIcon, ArrowRightIcon} from 'plotly-icons';
 
 
+const styles = {
+    button: {
+	margin: '3px',
+        padding: '0px',
+	width: '50px',
+	height: '50px',
+	verticalAlign: 'middle',
+    },
+
+    textbutton:{
+	verticalAlign: 'top',
+	height: '50px',
+	color: 'blue',
+	verticalAlign: 'middle',
+	}
+};
 
 /**
  * Canvas component for drawing on a background image and selecting
@@ -18,6 +36,8 @@ export default class DashCanvas extends Component {
     this._zoom = this._zoom.bind(this);
     this._zoom_factor = this._zoom_factor.bind(this);
     this._unzoom = this._unzoom.bind(this);
+    this._pantool = this._pantool.bind(this);
+    this._penciltool = this._penciltool.bind(this);
   } 
 
 
@@ -95,8 +115,19 @@ export default class DashCanvas extends Component {
     _unzoom(){
 	this._sketch.zoom(0.8);
 	let zoom_factor = this.props.zoom;
-	this.props.setProps({zoom: 0.8*zoom_factor})
+	this.props.setProps({zoom: 0.8*zoom_factor});
     };
+
+
+    _pantool(){
+	this.props.setProps({tool: "pan"});
+	};
+
+
+    _penciltool(){
+	this.props.setProps({tool: "pencil"});
+	};
+
 
 
     render() {
@@ -116,10 +147,37 @@ export default class DashCanvas extends Component {
 			 height={this.props.height}
 			 forceValue={true}
                          lineWidth={this.props.lineWidth}/>
-		       <button onClick={(e) => this._undo()}> Undo </button>
-		       <button onClick={(e) => this._zoom()}> Zoom </button>
-		       <button onClick={(e) => this._unzoom()}> Unzoom </button>
-		       <button onClick={(e) => this._save()}> Save </button>
+		    <button style={styles.button}
+			title="Zoom in"
+			onClick={(e) => this._zoom()}>
+			<ZoomPlusIcon/>
+		    </button>
+		    <button style={styles.button}
+			title="Zoom out"
+			onClick={(e) => this._unzoom()}>
+			<ZoomMinusIcon/>
+		    </button>
+		    <button style={styles.button}
+			title="Brush tool"
+			onClick={(e) => this._penciltool()}>
+			<EditIcon/>
+		    </button>
+		    <button style={styles.button}
+			title="Pan"
+			onClick={(e) => this._pantool()}>
+			<PanIcon/>
+		    </button>
+		    <button style={styles.button}
+			title="Undo"
+			onClick={(e) => this._undo()}>
+			<ArrowLeftIcon/>
+		    </button>
+		    <button style={styles.textbutton} 
+			onClick={(e) => this._save()}> Save 
+		    </button>
+
+
+
 		</div>
 	    
 

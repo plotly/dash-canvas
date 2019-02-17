@@ -20,7 +20,8 @@
         "react-dom": "15.4.2",
         "react-sketch": ">=0.4.4",
         "material-ui": "^0.20.0",
-        "react-color": "^2.13.8"
+        "react-color": "^2.13.8",
+        "plotly-icons": ">=1.0"
     },
     "devDependencies": {
         "babel-core": "^6.26.3",

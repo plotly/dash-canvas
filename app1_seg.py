@@ -68,7 +68,8 @@ layout = html.Div([
         html.H2(children='Segmentation result'),
         dcc.Graph(
             id='segmentation',
-            figure=image_with_contour(img, img > 0, shape=(height, width))
+            figure=image_with_contour(np.ones_like(img),
+                                      img > 0, shape=(height, width))
         )
         ], className="six columns")],# Div
     className="row")

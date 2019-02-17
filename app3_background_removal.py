@@ -48,6 +48,15 @@ layout = html.Div([
                 height=canvas_height,
                 scale=scale,
                 filename=filename,
+                lineWidth=4,
+            ),
+            html.H6(children=['Brush width']),
+            dcc.Slider(
+                id='bg-width-slider',
+                min=2,
+                max=40,
+                step=1,
+                value=[5]
             ),
             image_upload_zone('upload-image-bg'),
         ], className="six columns"),
@@ -130,4 +139,10 @@ def callbacks(app):
             return canvas_width / im_w
         else:
             return scale
+
+
+    @app.callback(Output('canvas-bg', 'lineWidth'),
+                [Input('bg-width-slider', 'value')])
+    def update_canvas_linewidth(value):
+        return value
 
