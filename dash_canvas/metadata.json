@@ -165,6 +165,17 @@
           "computed": false
         }
       },
+      "goButtonTitle": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "Title of button",
+        "defaultValue": {
+          "value": "'Save'",
+          "computed": false
+        }
+      },
       "filename": {
         "type": {
           "name": "string"

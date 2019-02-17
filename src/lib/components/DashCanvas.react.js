@@ -173,7 +173,8 @@ export default class DashCanvas extends Component {
 			<ArrowLeftIcon/>
 		    </button>
 		    <button style={styles.textbutton} 
-			onClick={(e) => this._save()}> Save 
+			onClick={(e) => this._save()}> 
+			{this.props.goButtonTitle} 
 		    </button>
 
 
@@ -190,7 +191,8 @@ export default class DashCanvas extends Component {
 DashCanvas.defaultProps = {filename:'', label:'',
 			   json_data:'', image_content:'', trigger:0,
 			   width:500, height:500, scale:1, lineWidth:20,
-			   lineColor:'yellow', tool:"pencil", zoom:1};
+			   lineColor:'yellow', tool:"pencil", zoom:1,
+			   goButtonTitle:'Save'};
 
 DashCanvas.propTypes = {
     /**
@@ -247,6 +249,14 @@ DashCanvas.propTypes = {
      * Alpha is possible with 'rgba(255, 0, 0, 0.5)'.
      */
     lineColor: PropTypes.string,
+
+    /**
+     * Title of button 
+     * 
+     * 
+     */
+    goButtonTitle: PropTypes.string,
+
 
     /**
      * Name of image file to load (URL string)
