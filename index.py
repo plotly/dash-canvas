@@ -1,12 +1,10 @@
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-from config import DASH_APP_NAME
 from glob import glob
 import base64
 import dash
 
-#from app import app
 import app1_seg as app1
 import app2_correct_segmentation as app2
 import app3_background_removal as app3
