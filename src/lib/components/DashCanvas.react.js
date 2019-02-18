@@ -57,7 +57,6 @@ export default class DashCanvas extends Component {
 		    scale:this.props.scale}
 	sketch.addImg(this.props.image_content, opts);
 	}
-
     }
 
 
@@ -74,10 +73,7 @@ export default class DashCanvas extends Component {
 	sketch.addImg(this.props.image_content, opts);
 	sketch._fc.setZoom(this.props.zoom);
     };
-    
     };
-
-
 
 
     _save() {
@@ -102,7 +98,6 @@ export default class DashCanvas extends Component {
 	this.props.setProps({zoom: factor*zoom_factor})
 	console.log(this.props.zoom);
     };
-    
 
 
     _zoom(){
@@ -131,54 +126,52 @@ export default class DashCanvas extends Component {
 
 
     render() {
-      console.log("rendered");
-      var toolsArray = {};
-      toolsArray["pencil"] = Tools.Pencil;
-      toolsArray["pan"] = Tools.Pan;
-      toolsArray["circle"] = Tools.Circle;
-      toolsArray["select"] = Tools.Select;
+        console.log("rendered");
+        var toolsArray = {};
+        toolsArray["pencil"] = Tools.Pencil;
+        toolsArray["pan"] = Tools.Pan;
+        toolsArray["circle"] = Tools.Circle;
+        toolsArray["select"] = Tools.Select;
         return (
-		<div className={this.props.className}>
-	    	<SketchField name='sketch'
-                         ref={(c) => this._sketch = c}
-                         tool={toolsArray[this.props.tool.toLowerCase()]}
-                         lineColor={this.props.lineColor}
-			 width={this.props.width}
-			 height={this.props.height}
-			 forceValue={true}
-                         lineWidth={this.props.lineWidth}/>
-		    <button style={styles.button}
-			title="Zoom in"
-			onClick={(e) => this._zoom()}>
-			<ZoomPlusIcon/>
-		    </button>
-		    <button style={styles.button}
-			title="Zoom out"
-			onClick={(e) => this._unzoom()}>
-			<ZoomMinusIcon/>
-		    </button>
-		    <button style={styles.button}
-			title="Brush tool"
-			onClick={(e) => this._penciltool()}>
-			<EditIcon/>
-		    </button>
-		    <button style={styles.button}
-			title="Pan"
-			onClick={(e) => this._pantool()}>
-			<PanIcon/>
-		    </button>
-		    <button style={styles.button}
-			title="Undo"
-			onClick={(e) => this._undo()}>
-			<ArrowLeftIcon/>
-		    </button>
-		    <button style={styles.textbutton} 
-			onClick={(e) => this._save()}> Save 
-		    </button>
+	    <div className={this.props.className}>
+	    <SketchField name='sketch'
+		ref={(c) => this._sketch = c}
+                tool={toolsArray[this.props.tool.toLowerCase()]}
+                lineColor={this.props.lineColor}
+		width={this.props.width}
+		height={this.props.height}
+		forceValue={true}
+                lineWidth={this.props.lineWidth}/>
+	    <button style={styles.button}
+		    title="Zoom in"
+		    onClick={(e) => this._zoom()}>
+		<ZoomPlusIcon/>
+	    </button>
+	    <button style={styles.button}
+		    title="Zoom out"
+		    onClick={(e) => this._unzoom()}>
+		<ZoomMinusIcon/>
+	    </button>
+	    <button style={styles.button}
+		    title="Brush tool"
+		    onClick={(e) => this._penciltool()}>
+		<EditIcon/>
+	    </button>
+	    <button style={styles.button}
+		    title="Pan"
+		    onClick={(e) => this._pantool()}>
+		<PanIcon/>
+	    </button>
+	    <button style={styles.button}
+		    title="Undo"
+		    onClick={(e) => this._undo()}>
+		<ArrowLeftIcon/>
+	    </button>
+	    <button style={styles.textbutton} 
+		onClick={(e) => this._save()}> Save 
+	    </button>
 
-
-
-		</div>
+	    </div>
 	    
 
         )
