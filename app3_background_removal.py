@@ -49,6 +49,7 @@ layout = html.Div([
                 scale=scale,
                 filename=filename,
                 lineWidth=4,
+                goButtonTitle='Remove background',
             ),
             html.H6(children=['Brush width']),
             dcc.Slider(

@@ -42,8 +42,8 @@ layout = html.Div([
         html.H2(children='Segmentation tool'),
         dcc.Markdown('''
             Draw on the picture to annotate each object
-            you want to segment, then press the Save button
-            to trigger the segmentation.
+            you want to segment, then press the "Segmentation"
+            button to trigger the segmentation.
         '''),
         dash_canvas.DashCanvas(
             id='canvas',
@@ -52,6 +52,7 @@ layout = html.Div([
             height=canvas_height,
             scale=scale,
             filename=filename,
+            goButtonTitle='Segmentation'
         ),
         image_upload_zone('upload-image'),
         dcc.Dropdown(

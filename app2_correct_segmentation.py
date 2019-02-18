@@ -47,9 +47,9 @@ layout = html.Div([
     html.H3(children='Manual correction of automatic segmentation'),
     dcc.Markdown('''
         Annotate the picture to delineate boundaries
-        between objects (in split mode)
-        or to join objects together (in merge mode),
-        then press the Save button to correct
+        between objects (in split mode) or to join objects
+        together (in merge mode), then press the 
+        "Update segmentation" button to correct
         the segmentation.
     '''),
     html.H5(children='Annotations'),
@@ -90,6 +90,7 @@ layout = html.Div([
         lineWidth=2,
         lineColor='red',
         image_content=array_to_data_url(overlay),
+        goButtonTitle='Update segmentation',
     ),
      ], className="six columns"),
        ])
