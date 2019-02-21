@@ -10,6 +10,7 @@ from dash.dependencies import Input, Output, State
 import dash_html_components as html
 import dash_core_components as dcc
 import plotly.graph_objs as go
+from dash.exceptions import PreventUpdate
 
 from dash_canvas.utils.parse_json import parse_jsonstring
 from dash_canvas.utils.image_processing_utils import segmentation_generic
@@ -108,7 +109,7 @@ def callbacks(app):
                 [Input('upload-image', 'contents')])
     def update_canvas_upload(image_string):
         if image_string is None:
-            raise ValueError
+            raise PreventUpdate
         if image_string is not None:
             return image_string
         else:
@@ -121,7 +122,7 @@ def callbacks(app):
                 State('canvas', 'height')])
     def update_canvas_upload_shape(image_string, w, h):
         if image_string is None:
-            raise ValueError
+            raise PreventUpdate
         if image_string is not None:
             # very dirty hack, this should be made more robust using regexp
             im = image_string_to_PILImage(image_string)
@@ -135,7 +136,7 @@ def callbacks(app):
                 [Input('upload-image', 'contents')])
     def update_canvas_upload_scale(image_string):
         if image_string is None:
-            raise ValueError
+            raise PreventUpdate
         if image_string is not None:
             # very dirty hack, this should be made more robust using regexp
             im = image_string_to_PILImage(image_string)

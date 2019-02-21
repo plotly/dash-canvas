@@ -2,7 +2,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 
 
-def image_upload_zone(name):
+def image_upload_zone(name, multiple=False):
     return dcc.Upload(
                 id=name,
                 children=[
@@ -17,5 +17,6 @@ def image_upload_zone(name):
                        'textAlign': 'center'
                        },
                 accept='image/*',
+                multiple=multiple,
                 )
 
