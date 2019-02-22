@@ -9,5 +9,6 @@ pyamg
 dash-html-components
 dash-core-components
 dash-renderer
+dash-table
 plotly
 gunicorn
