@@ -63,12 +63,10 @@ def parse_jsonstring(string, shape=None, scale=1):
     except:
         return mask
     scale = 1
-    i = 1
     for obj in data['objects']:
         if obj['type'] == 'image':
             scale = obj['scaleX']
-        if obj['type'] == 'path':
-            i += 1
+        elif obj['type'] == 'path':
             scale_obj = obj['scaleX']
             inds = _indices_of_path(obj['path'], scale=scale / scale_obj)
             radius = round(obj['strokeWidth'] / 2. / scale)
@@ -78,6 +76,35 @@ def parse_jsonstring(string, shape=None, scale=1):
                                                   morphology.disk(radius))
             mask += mask_tmp
     return mask
+
+
+def parse_jsonstring_line(string):
+    """
+    Return geometry of line objects.
+
+    Parameters
+    ----------
+
+    data : str
+        JSON string of data
+
+    """
+    try:
+        data = json.loads(string)
+    except:
+        return None
+    scale = 1
+    props = []
+    for obj in data['objects']:
+        if obj['type'] == 'image':
+            scale = obj['scaleX']
+        elif obj['type'] == 'line':
+            length = np.sqrt(obj['width']**2 + obj['height']**2)
+            scale_factor = obj['scaleX'] / scale
+            props.append([scale_factor * length,
+                          scale_factor * obj['width'],
+                          scale_factor * obj['height']])
+    return (np.array(props)).astype(np.int)
 
 
 def parse_jsonfile(filename, shape=None):

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {SketchField, Tools} from 'react-sketch';
 import {ZoomMinusIcon, ZoomPlusIcon, EditIcon, PanIcon,
-	ArrowLeftIcon, ArrowRightIcon} from 'plotly-icons';
+	ArrowLeftIcon, PlotLineIcon} from 'plotly-icons';
 
 
 const styles = {
@@ -38,6 +38,7 @@ export default class DashCanvas extends Component {
     this._unzoom = this._unzoom.bind(this);
     this._pantool = this._pantool.bind(this);
     this._penciltool = this._penciltool.bind(this);
+    this._linetool = this._linetool.bind(this);
   } 
 
 
@@ -124,12 +125,18 @@ export default class DashCanvas extends Component {
 	};
 
 
+    _linetool(){
+	this.props.setProps({tool: "line"});
+	};
+
+
 
     render() {
         console.log("rendered");
         var toolsArray = {};
         toolsArray["pencil"] = Tools.Pencil;
         toolsArray["pan"] = Tools.Pan;
+        toolsArray["line"] = Tools.Line;
         toolsArray["circle"] = Tools.Circle;
         toolsArray["select"] = Tools.Select;
         return (
@@ -157,6 +164,12 @@ export default class DashCanvas extends Component {
 		    onClick={(e) => this._penciltool()}>
 		<EditIcon/>
 	    </button>
+	    <button style={styles.button}
+		    title="Line tool"
+		    onClick={(e) => this._linetool()}>
+		<PlotLineIcon/>
+	    </button>
+
 	    <button style={styles.button}
 		    title="Pan"
 		    onClick={(e) => this._pantool()}>
