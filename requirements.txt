@@ -3,6 +3,7 @@ dash
 numpy
 scikit-image
 scikit-learn
+pandas
 Pillow
 pyamg
 dash-html-components
