@@ -118,7 +118,6 @@ def modify_segmentation(labels, mask, img=None, mode='split'):
     elif mode == 'merge':
         return _merge_labels(labels, mask)
     else:
-        print(mode)
         raise ValueError('mode should be either split or merge')
 
 
@@ -274,8 +273,11 @@ def segmentation_generic(img, mask, mode='watershed'):
 
 
 def superpixel_color_segmentation(im, mask, mode='bbox', remove_holes='all',
-        object='single'):
-    mask = mask[:im.shape[0], :im.shape[1]]
+        object='single', keep_label=True):
+    if not mask.shape == im.shape:
+        big_mask = np.zeros(im.shape[:2], dtype=np.uint8)
+        big_mask[:mask.shape[0], :mask.shape[1]] = mask
+        mask = big_mask
     if mask.max() == 1:
         mask = annotation_to_background_mask(mask, mode=mode)
     px = segmentation.felzenszwalb(im, scale=4)
@@ -290,6 +292,9 @@ def superpixel_color_segmentation(im, mask, mode='bbox', remove_holes='all',
     clf = KNeighborsClassifier()
     clf.fit(training_set, target)
     res = clf.predict(colors)
+    if keep_label:
+        for i in range(1, nb_phases + 1):
+            res[indices[i - 1]] = i
     res_img = res[px]
     mask_res = res_img == 1
     if object == 'single':
