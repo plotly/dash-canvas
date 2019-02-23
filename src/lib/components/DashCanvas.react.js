@@ -239,7 +239,7 @@ DashCanvas.propTypes = {
  
     /**
      * Selection of drawing tool, among ["pencil", "pan", "circle",
-     * "select"].
+     * "select", "line"].
      */
     tool: PropTypes.string,
  
@@ -257,8 +257,6 @@ DashCanvas.propTypes = {
 
     /**
      * Title of button 
-     * 
-     * 
      */
     goButtonTitle: PropTypes.string,
 
