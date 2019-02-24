@@ -1,5 +1,6 @@
 import dash_canvas
 import numpy as np
+import pandas as pd
 import dash
 from dash.dependencies import Input, Output, State
 import dash_html_components as html
@@ -11,7 +12,9 @@ from dash_canvas.utils.io_utils import (image_string_to_PILImage,
                                         array_to_data_url)
 from skimage import io
 from dash_canvas.utils.registration import register_tiles
-
+from dash_canvas.utils.parse_json import parse_jsonstring_line
+import dash_table
+from ipdb import launch_ipdb_on_exception
 
 def tile_images(list_of_images, n_rows, n_cols):
     dtype = list_of_images[0].dtype
@@ -26,19 +29,21 @@ def tile_images(list_of_images, n_rows, n_cols):
 
 def untile_images(image_string, n_rows, n_cols):
     big_im = np.asarray(image_string_to_PILImage(image_string))
-    print(big_im.shape)
     tiles = [np.split(im, n_cols, axis=1) for im in np.split(big_im, n_rows)]
     return np.array(tiles)
 
 
 app = dash.Dash(__name__)
 server = app.server
-app.config.suppress_callback_exceptions = True
+app.config.suppress_callback_exceptions = False
 
 height, width = 200, 500
 canvas_width = 800
 canvas_height = round(height * canvas_width / width)
 scale = canvas_width / width
+
+list_columns = ['length', 'width', 'height']
+columns = [{"name": i, "id": i} for i in list_columns]
 
 
 app.layout = html.Div([
@@ -51,9 +56,10 @@ app.layout = html.Div([
             scale=scale,
             lineWidth=2,
             lineColor='red',
+            tool="line",
             image_content=array_to_data_url(np.zeros((width, width),
                                             dtype=np.uint8)),
-            goButtonTitle='',
+            goButtonTitle='Estimate translation',
         ),
         image_upload_zone('upload-stitch', multiple=True),
         html.Div(id='sh_x', hidden=True),
@@ -70,7 +76,7 @@ app.layout = html.Div([
         dcc.Input(
             id='ncolumns-stitch',
             type='number',
-            value=1,
+            value=2,
             name='number of columns',
             ),
         html.Label('Fraction of overlap (in [0-1] range)'),
@@ -78,8 +84,16 @@ app.layout = html.Div([
             id='overlap-stitch',
             type='float',
             value=0.25,
-            name='number of columns',
             ),
+        html.Label('Measured shifts between images'),
+        dash_table.DataTable(
+            id='table-stitch',
+            columns=columns,
+            editable=True,
+            ),
+
+        html.Div(id='estimate-stitch'),
+        html.Label(''),
         html.Button('Run stitching', id='button-stitch'),
     ], className="three columns"),
     ])
@@ -100,13 +114,28 @@ def update_canvas_upload(list_image_string, list_filenames, nrows, ncols):
         return None
 
 
-def perform_registration(n_cl, n_rows, n_cols, overlap, image_string):
+def perform_registration(n_cl, n_rows, n_cols, overlap, estimate, image_string):
+    print(overlap, estimate)
     tiles = untile_images(image_string, n_rows, n_cols)
+    if estimate is not None and len(estimate) > 0:
+        overlap = []
+        for line in estimate:
+            print(line)
+            overlap.append(1.1 * line['length'] / tiles.shape[3])
+            print("overlap is", overlap, line['length'])
+
     canvas = register_tiles(tiles, n_rows, n_cols,
-                            overlap_fraction=float(overlap), 
+                            overlaps=overlap,
                             pad=100)
     return array_to_data_url(canvas)
 
+
+@app.callback(Output('table-stitch', 'data'),
+             [Input('canvas-stitch', 'json_data')])
+def estimate_translation(string):
+    props = parse_jsonstring_line(string)
+    df = pd.DataFrame(props, columns=list_columns)
+    return df.to_dict("records")
 
 
 
@@ -117,13 +146,13 @@ def perform_registration(n_cl, n_rows, n_cols, overlap, image_string):
               [State('nrows-stitch', 'value'),
                State('ncolumns-stitch', 'value'),
                State('overlap-stitch', 'value'),
+               State('table-stitch', 'data'),
                State('sh_x', 'children')])
-def modify_content(n_cl, list_image_string, list_filenames, n_rows, n_cols, overlap, image_string):
-    print(n_cl)
+def modify_content(n_cl, list_image_string, list_filenames, n_rows, n_cols, overlap, table, image_string):
     if n_cl is None:
         return update_canvas_upload(list_image_string, list_filenames, n_rows, n_cols)
     else:
-        return perform_registration(n_cl, n_rows, n_cols, overlap, image_string)
+        return perform_registration(n_cl, n_rows, n_cols, overlap, table, image_string)
 
 
 @app.callback(Output('canvas-stitch', 'image_content'),
@@ -143,7 +172,6 @@ def update_canvas_upload_shape(image_string, w, h):
     if image_string is not None:
         im = image_string_to_PILImage(image_string)
         im_h, im_w = im.height, im.width
-        print('width', im_h, im_w)
         return round(w / im_w * im_h)
     else:
         return canvas_height
@@ -165,5 +193,6 @@ def update_canvas_upload_scale(image_string):
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    with launch_ipdb_on_exception():
+        app.run_server(debug=True)
 
