@@ -32,6 +32,23 @@ def untile_images(image_string, n_rows, n_cols):
     tiles = [np.split(im, n_cols, axis=1) for im in np.split(big_im, n_rows)]
     return np.array(tiles)
 
+def instructions():
+    return html.Div(children=[
+    html.H5(children='How to use this stitching app'),
+    dcc.Markdown("""
+    - Choose the number of rows and columns of the mosaic,
+    - Upload images.
+    - Try automatic stitching by pressing
+    the "Run stitching" button.
+    - If automatic stitching did not work,
+    try adjusting the overlap parameter.
+
+    If shifts between different images are very diifferent,
+    draw lines to match points of interest in pairs of
+    images, then press "Estimate translation" to compute an
+    estimate of the shifts, then press "Run stitching".
+    """)
+    ])
 
 app = dash.Dash(__name__)
 server = app.server
@@ -48,21 +65,45 @@ columns = [{"name": i, "id": i} for i in list_columns]
 
 app.layout = html.Div([
     html.Div([
-        dash_canvas.DashCanvas(
-            id='canvas-stitch',
-            label='my-label',
-            width=canvas_width,
-            height=canvas_height,
-            scale=scale,
-            lineWidth=2,
-            lineColor='red',
-            tool="line",
-            image_content=array_to_data_url(np.zeros((width, width),
-                                            dtype=np.uint8)),
-            goButtonTitle='Estimate translation',
-        ),
-        image_upload_zone('upload-stitch', multiple=True),
-        html.Div(id='sh_x', hidden=True),
+        dcc.Tabs(
+            id='stitching-tabs',
+            value='canvas-tab',
+            children=[
+                dcc.Tab(
+                    label='Image tiles',
+                    value='canvas-tab',
+                    children=[
+                        dash_canvas.DashCanvas(
+                            id='canvas-stitch',
+                            label='my-label',
+                            width=canvas_width,
+                            height=canvas_height,
+                            scale=scale,
+                            lineWidth=2,
+                            lineColor='red',
+                            tool="line",
+                            image_content=array_to_data_url(
+                                np.zeros((width, width), dtype=np.uint8)),
+                            goButtonTitle='Estimate translation',
+                        ),
+                        image_upload_zone('upload-stitch', multiple=True,
+                            width=45),
+                        html.Div(id='sh_x', hidden=True),
+                    ]
+                ),
+                dcc.Tab(
+                    label='Stitched Image',
+                    value='result-tab',
+                    children=[
+                        html.Img(id='stitching-result',
+                            src=array_to_data_url(
+                                np.zeros((height, width), dtype=np.uint8)),
+                            width=canvas_width)
+
+                        ]
+                    )
+            ]
+            )
     ], className="eight columns"),
     html.Div([
         html.Label('Number of rows'),
@@ -83,7 +124,7 @@ app.layout = html.Div([
         dcc.Input(
             id='overlap-stitch',
             type='float',
-            value=0.25,
+            value=0.15,
             ),
         html.Label('Measured shifts between images'),
         dash_table.DataTable(
@@ -93,8 +134,11 @@ app.layout = html.Div([
             ),
 
         html.Div(id='estimate-stitch'),
-        html.Label(''),
-        html.Button('Run stitching', id='button-stitch'),
+        html.Br(),
+        html.Button('Run stitching', id='button-stitch',
+                                     style={'color':'red'}),
+        html.Br(),
+        instructions()
     ], className="three columns"),
     ])
 
@@ -138,21 +182,35 @@ def estimate_translation(string):
     return df.to_dict("records")
 
 
-
 @app.callback(Output('sh_x', 'children'),
-              [Input('button-stitch', 'n_clicks'),
-               Input('upload-stitch', 'contents'),
+              [Input('upload-stitch', 'contents'),
                Input('upload-stitch', 'filename')],
+              [State('nrows-stitch', 'value'),
+               State('ncolumns-stitch', 'value')])
+def upload_content(list_image_string, list_filenames, n_rows, n_cols):
+    return update_canvas_upload(list_image_string, list_filenames,
+                                n_rows, n_cols)
+
+
+
+@app.callback(Output('stitching-tabs', 'value'),
+              [Input('button-stitch', 'n_clicks')])
+def change_focus(click):
+    print('changing focus')
+    if click:
+        return 'result-tab'
+    return 'canvas-tab'
+
+@app.callback(Output('stitching-result', 'src'),
+              [Input('button-stitch', 'n_clicks')],
               [State('nrows-stitch', 'value'),
                State('ncolumns-stitch', 'value'),
                State('overlap-stitch', 'value'),
                State('table-stitch', 'data'),
                State('sh_x', 'children')])
-def modify_content(n_cl, list_image_string, list_filenames, n_rows, n_cols, overlap, table, image_string):
-    if n_cl is None:
-        return update_canvas_upload(list_image_string, list_filenames, n_rows, n_cols)
-    else:
-        return perform_registration(n_cl, n_rows, n_cols, overlap, table, image_string)
+def modify_content(n_cl, n_rows, n_cols, overlap, table, image_string):
+    return perform_registration(n_cl, n_rows, n_cols, overlap, table,
+                                image_string)
 
 
 @app.callback(Output('canvas-stitch', 'image_content'),
