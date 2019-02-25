@@ -95,7 +95,7 @@ def callbacks(app):
                 image = img
             seg = np.ones((h, w))
         fill_value = 255 * np.ones(3, dtype=np.uint8)
-        dat = np.copy(img)
+        dat = np.copy(im)
         dat[np.logical_not(seg)] = fill_value
         return array_to_data_url(dat)
 

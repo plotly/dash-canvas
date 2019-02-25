@@ -9,7 +9,7 @@ import app1_seg as app1
 import app2_correct_segmentation as app2
 import app3_background_removal as app3
 import app4_measure_length as app4
-
+import app5_stitching as app5
 
 app = dash.Dash(__name__)
 server = app.server
@@ -21,7 +21,8 @@ app.layout = html.Div([
     html.Div(id='page-content')
 ])
 
-apps = {'app1': app1, 'app2': app2, 'app3': app3, 'app4': app4}
+apps = {'app1': app1, 'app2': app2, 'app3': app3, 'app4': app4,
+        'app5': app5}
 
 for key in apps:
     try:
