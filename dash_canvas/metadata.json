@@ -63,6 +63,13 @@
         "modifiers": [],
         "params": [],
         "returns": null
+      },
+      {
+        "name": "_selecttool",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
       }
     ],
     "props": {
@@ -144,7 +151,7 @@
           "name": "string"
         },
         "required": false,
-        "description": "Selection of drawing tool, among [\"pencil\", \"pan\", \"circle\",\n\"select\"].",
+        "description": "Selection of drawing tool, among [\"pencil\", \"pan\", \"circle\",\n\"select\", \"line\"].",
         "defaultValue": {
           "value": "\"pencil\"",
           "computed": false
@@ -213,6 +220,20 @@
         "description": "Sketch content as JSON string, containing background image and\nannotations. Use utils.parse_json.parse_jsonstring to parse\nthis string.",
         "defaultValue": {
           "value": "''",
+          "computed": false
+        }
+      },
+      "hide_buttons": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "string"
+          }
+        },
+        "required": false,
+        "description": "Names of buttons to hide. Names are \"zoom\", \"pan\", \"line\", \"pencil\",\n\"undo\", \"select\".",
+        "defaultValue": {
+          "value": "[]",
           "computed": false
         }
       },

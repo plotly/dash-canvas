@@ -43,13 +43,13 @@ layout = html.Div([
              background.'''),
             dash_canvas.DashCanvas(
                 id='canvas-bg',
-                label='my-label',
                 width=canvas_width,
                 height=canvas_height,
                 scale=scale,
                 filename=filename,
                 lineWidth=4,
                 goButtonTitle='Remove background',
+                hide_buttons=['line', 'zoom', 'pan'],
             ),
             html.H6(children=['Brush width']),
             dcc.Slider(

@@ -48,7 +48,6 @@ layout = html.Div([
         '''),
         dash_canvas.DashCanvas(
             id='canvas',
-            label='my-label',
             width=canvas_width,
             height=canvas_height,
             scale=scale,

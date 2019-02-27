@@ -87,7 +87,6 @@ layout = html.Div([
                     children=[
                         dash_canvas.DashCanvas(
                             id='canvas-stitch',
-                            label='my-label',
                             width=canvas_width,
                             height=canvas_height,
                             scale=scale,

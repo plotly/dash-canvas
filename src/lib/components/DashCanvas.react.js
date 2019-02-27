@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {SketchField, Tools} from 'react-sketch';
 import {ZoomMinusIcon, ZoomPlusIcon, EditIcon, PanIcon,
-	ArrowLeftIcon, PlotLineIcon} from 'plotly-icons';
+	ArrowLeftIcon, PlotLineIcon, TagOutlineIcon} from 'plotly-icons';
 
 
 const styles = {
@@ -39,6 +39,7 @@ export default class DashCanvas extends Component {
     this._pantool = this._pantool.bind(this);
     this._penciltool = this._penciltool.bind(this);
     this._linetool = this._linetool.bind(this);
+    this._selecttool = this._selecttool.bind(this);
   } 
 
 
@@ -130,6 +131,12 @@ export default class DashCanvas extends Component {
 	};
 
 
+    _selecttool(){
+	this.props.setProps({tool: "select"});
+	};
+
+
+
 
     render() {
         console.log("rendered");
@@ -139,6 +146,13 @@ export default class DashCanvas extends Component {
         toolsArray["line"] = Tools.Line;
         toolsArray["circle"] = Tools.Circle;
         toolsArray["select"] = Tools.Select;
+	const hide_buttons = this.props.hide_buttons;
+	const show_line = !(hide_buttons.includes("line"));
+	const show_pan = !(hide_buttons.includes("pan"));
+	const show_zoom = !(hide_buttons.includes("zoom"));
+	const show_pencil = !(hide_buttons.includes("pencil"));
+	const show_undo = !(hide_buttons.includes("undo"));
+	const show_select = !(hide_buttons.includes("select"));
         return (
 	    <div className={this.props.className}>
 	    <SketchField name='sketch'
@@ -149,37 +163,56 @@ export default class DashCanvas extends Component {
 		height={this.props.height}
 		forceValue={true}
                 lineWidth={this.props.lineWidth}/>
+	    {show_zoom &&
 	    <button style={styles.button}
 		    title="Zoom in"
 		    onClick={(e) => this._zoom()}>
 		<ZoomPlusIcon/>
 	    </button>
+	    }
+	    {show_zoom &&
 	    <button style={styles.button}
 		    title="Zoom out"
 		    onClick={(e) => this._unzoom()}>
 		<ZoomMinusIcon/>
 	    </button>
+	    }
+	    {show_pencil &&
 	    <button style={styles.button}
-		    title="Brush tool"
+		    title="Pencil tool"
 		    onClick={(e) => this._penciltool()}>
 		<EditIcon/>
 	    </button>
+	    }
+	    {show_line &&
 	    <button style={styles.button}
 		    title="Line tool"
 		    onClick={(e) => this._linetool()}>
 		<PlotLineIcon/>
 	    </button>
-
+	    }
+	    {show_pan &&
 	    <button style={styles.button}
 		    title="Pan"
 		    onClick={(e) => this._pantool()}>
 		<PanIcon/>
 	    </button>
+	    }
+	    {show_undo &&
 	    <button style={styles.button}
 		    title="Undo"
 		    onClick={(e) => this._undo()}>
 		<ArrowLeftIcon/>
 	    </button>
+	    }
+	    {show_select &&
+	    <button style={styles.button}
+		    title="Select"
+		    onClick={(e) => this._selecttool()}>
+		<TagOutlineIcon/>
+	    </button>
+	    }
+	
 	    <button style={styles.textbutton} 
 		    onClick={(e) => this._save()}> 
 		    {this.props.goButtonTitle} 
@@ -197,7 +230,7 @@ DashCanvas.defaultProps = {filename:'', label:'',
 			   json_data:'', image_content:'', trigger:0,
 			   width:500, height:500, scale:1, lineWidth:20,
 			   lineColor:'yellow', tool:"pencil", zoom:1,
-			   goButtonTitle:'Save'};
+			   goButtonTitle:'Save', hide_buttons:[]};
 
 DashCanvas.propTypes = {
     /**
@@ -279,6 +312,12 @@ DashCanvas.propTypes = {
      * this string.
      */
     json_data: PropTypes.string,
+
+    /**
+     * Names of buttons to hide. Names are "zoom", "pan", "line", "pencil",
+     * "undo", "select".
+     */
+    hide_buttons: PropTypes.arrayOf(PropTypes.string),
     
     /**
      * Dash-assigned callback that should be called whenever any of the
