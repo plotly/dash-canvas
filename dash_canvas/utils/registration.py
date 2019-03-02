@@ -31,18 +31,15 @@ def register_tiles(imgs, n_rows, n_cols, overlap_global=None,
             index_orig = index_target - n_cols
             try:
                 overlap = overlap_local[(index_orig, index_target)]
-                print(index_orig, index_target, overlap_local[(index_orig, index_target)], overlap)
             except KeyError:
                 overlap = np.array([overlap_value, 0])
-                print(index_orig, index_target, overlap, "not found")
             init_r, init_c = shifts[i_rows - 1, 0]
             init_r += l_r
             shift_vert = feature.register_translation(
-                    imgs[i_rows - 1, 0, -overlap[0]:, - (l_c - overlap[1]):],
-                    imgs[i_rows, 0, :overlap[0], :(l_c - overlap[1])])[0]
-            print("shift", shift_vert)
+                    imgs[i_rows - 1, 0, -overlap[0]:, :(l_c - overlap[1])],
+                    imgs[i_rows, 0, :overlap[0], -(l_c - overlap[1]):])[0]
             init_r += int(shift_vert[0])  - overlap[0]
-            init_c += int(shift_vert[1]) + overlap[1]
+            init_c += int(shift_vert[1]) - overlap[1]
             shifts[i_rows, 0] = init_r, init_c
             canvas[init_r:init_r + l_r, init_c:init_c + l_c] = imgs[i_rows,
                                                                     0]
@@ -53,7 +50,6 @@ def register_tiles(imgs, n_rows, n_cols, overlap_global=None,
             index_target = index_orig + 1
             try:
                 overlap = overlap_local[(index_orig, index_target)]
-                print(index_orig, index_target, overlap_local[(index_orig, index_target)], overlap)
             except KeyError:
                 overlap = np.array([0, overlap_value])
                 print(index_orig, index_target, overlap, "not found")
@@ -61,7 +57,6 @@ def register_tiles(imgs, n_rows, n_cols, overlap_global=None,
             shift_horiz = feature.register_translation(
                     imgs[i_rows, j_cols, - (l_r - overlap[0]):, -overlap[1]:], 
                 imgs[i_rows, j_cols+1, : l_r - overlap[0], :overlap[1]])[0]
-            print("shift", shift_horiz)
             init_r += int(shift_horiz[0]) + overlap[0]
             init_c += int(shift_horiz[1]) - overlap[1]
             shifts[i_rows, j_cols + 1] = init_r, init_c
