@@ -103,7 +103,9 @@ def parse_jsonstring_line(string):
             scale_factor = obj['scaleX'] / scale
             props.append([scale_factor * length,
                           scale_factor * obj['width'],
-                          scale_factor * obj['height']])
+                          scale_factor * obj['height'],
+                          scale_factor * obj['left'],
+                          scale_factor * obj['top']])
     return (np.array(props)).astype(np.int)
 
 
