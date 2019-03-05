@@ -227,6 +227,8 @@ def modify_content(n_cl, n_rows, n_cols, overlap, estimate, image_string):
     if estimate is not None and len(estimate) > 0:
         overlap_dict = _sort_props_lines(estimate, tiles.shape[2], 
                                                tiles.shape[3], n_cols)
+    else:
+        overlap_dict = None
     canvas = register_tiles(tiles, n_rows, n_cols,
                             overlap_global=overlap, 
                             overlap_local=overlap_dict,
