@@ -2,6 +2,7 @@ from glob import glob
 import numpy as np
 import pandas as pd
 from skimage import io
+from time import sleep
 
 import dash
 from dash.exceptions import PreventUpdate
@@ -16,6 +17,7 @@ from dash_canvas.utils.io_utils import (image_string_to_PILImage,
                                         array_to_data_url)
 from dash_canvas.utils.registration import register_tiles
 from dash_canvas.utils.parse_json import parse_jsonstring_line
+from dash_canvas.utils.exposure import brightness_adjust, contrast_adjust
 
 
 
@@ -116,19 +118,50 @@ app.layout = html.Div([
                         image_upload_zone('upload-stitch', multiple=True,
                             width=45),
                         html.Div(id='sh_x', hidden=True),
+                        dcc.Loading(id='loading-2', children=[
+                        html.Div(id='stitched-res', hidden=True)],
+                        type='circle'),
+                        dcc.Store(id='memory-stitch'),
                     ]
                 ),
                 dcc.Tab(
                     label='Stitched Image',
                     value='result-tab',
                     children=[
+                        dcc.Loading(id='loading-1', children=[
                         html.Img(id='stitching-result',
                             src=array_to_data_url(
                                 np.zeros((height, width), dtype=np.uint8)),
-                            width=canvas_width)
+                            width=canvas_width)],
+                        type='circle'),
+                        html.Div([
+                        html.Label('Contrast'),
+                        dcc.Slider(id='contrast-stitch',
+                                   min=0,
+                                   max=1,
+                                   step=0.02,
+                                   value=0.5)],
+                        style={'width':'40%'}),
+                        html.Div([
+                        html.Label('Brightness'),
+                        dcc.Slider(id='brightness-stitch',
+                                   min=0,
+                                   max=1,
+                                   step=0.02,
+                                   value=0.5,)], 
+                        style={'width':'40%'}),
+
 
                         ]
-                    )
+                    ),
+                dcc.Tab(
+                    label='How to use this app',
+                    value='help-tab',
+                    children=[
+                        html.Img(id='bla', src='./assets/stitching.gif',
+                            width=canvas_width),
+                        ]
+                        )
             ]
             )
     ], className="eight columns"),
@@ -152,6 +185,11 @@ app.layout = html.Div([
             id='overlap-stitch',
             type='float',
             value=0.15,
+            ),
+        dcc.Checklist(
+            id='do-blending-stitch',
+            options=[{'label':'Blending images', 'value':1}],
+            values=[1],
             ),
         html.Label('Measured shifts between images'),
         dash_table.DataTable(
@@ -215,24 +253,49 @@ def change_focus(click):
     return 'canvas-tab'
 
 
+@app.callback(Output('memory-stitch', 'data'),
+            [Input('button-stitch', 'n_clicks')])
+def update_store(click):
+    sleep(1)
+    return click
+
+
+
 @app.callback(Output('stitching-result', 'src'),
+            [Input('contrast-stitch', 'value'),
+             Input('brightness-stitch', 'value'),
+             Input('stitched-res', 'children')])
+def modify_result(contrast, brightness, image_string):
+    print('in modify result')
+    img = np.asarray(image_string_to_PILImage(image_string))
+    img = contrast_adjust(img, contrast)
+    img = brightness_adjust(img, brightness)
+    return array_to_data_url(img)
+
+
+@app.callback(Output('stitched-res', 'children'),
             [Input('button-stitch', 'n_clicks')],
             [State('nrows-stitch', 'value'),
             State('ncolumns-stitch', 'value'),
             State('overlap-stitch', 'value'),
             State('table-stitch', 'data'),
-            State('sh_x', 'children')])
-def modify_content(n_cl, n_rows, n_cols, overlap, estimate, image_string):
+            State('sh_x', 'children'),
+            State('do-blending-stitch', 'values')])
+def modify_content(n_cl,
+                   n_rows, n_cols, overlap, estimate, image_string, vals):
+    print('in modify content')
+    blending = 1 in vals
     tiles = untile_images(image_string, n_rows, n_cols)
     if estimate is not None and len(estimate) > 0:
-        overlap_dict = _sort_props_lines(estimate, tiles.shape[2], 
-                                               tiles.shape[3], n_cols)
+        overlap_dict = _sort_props_lines(estimate, tiles.shape[2],
+                                            tiles.shape[3], n_cols)
     else:
         overlap_dict = None
     canvas = register_tiles(tiles, n_rows, n_cols,
-                            overlap_global=overlap, 
+                            overlap_global=overlap,
                             overlap_local=overlap_dict,
-                            pad=np.max(tiles.shape[2:])//2)
+                            pad=np.max(tiles.shape[2:])//2,
+                            blending=blending)
     return array_to_data_url(canvas)
 
 

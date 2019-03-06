@@ -59,7 +59,7 @@ def register_tiles(imgs, n_rows, n_cols, overlap_global=None,
     l_r, l_c = imgs.shape[2:4]
     if overlap_global is None:
         overlap_global = 0.15
-    overlap_value = int(overlap_global * l_r)
+    overlap_value = int(float(overlap_global) * l_r)
     imgs = imgs.astype(np.float)
     if blending:
         blending_mask = _blending_mask((l_r, l_c))
@@ -111,7 +111,6 @@ def register_tiles(imgs, n_rows, n_cols, overlap_global=None,
                 overlap = overlap_local[(index_orig, index_target)]
             except (KeyError, TypeError):
                 overlap = np.array([0, overlap_value])
-                print(index_orig, index_target, overlap, "not found")
             init_c += l_c
             shift_horiz = feature.register_translation(
                 imgs[i_rows, j_cols, - (l_r - overlap[0]):, -overlap[1]:],
