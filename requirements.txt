@@ -1,6 +1,7 @@
 # dash is required to call `build:py`
 dash
 numpy
+scipy
 scikit-image
 scikit-learn
 pandas
