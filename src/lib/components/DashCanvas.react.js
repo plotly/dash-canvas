@@ -67,8 +67,11 @@ export default class DashCanvas extends Component {
     // Typical usage (don't forget to compare props):
     if (
 	(this.props.image_content !== prevProps.image_content)){
+	if (this.props.setProps){
+        let JSON_string = JSON.stringify(this._sketch.toJSON());
+	this.props.setProps({json_data: JSON_string});
+	}
 	sketch.clear();
-	this.props.setProps({json_data: ''});
 	let opts = {left:0,
 	 	    top:0,
 	            scale:this.props.scale}
@@ -81,7 +84,9 @@ export default class DashCanvas extends Component {
     _save() {
         let JSON_string = JSON.stringify(this._sketch.toJSON());
 	let toggle_value = this.props.trigger + 1
+	if (this.props.setProps){
 	this.props.setProps({json_data: JSON_string, trigger: toggle_value});
+	}
     };
 
 
