@@ -30,6 +30,7 @@ export default class DashCanvas extends Component {
     constructor(props) {
     super(props);
     this.state = {
+	height:200
     };
     this._save = this._save.bind(this);
     this._undo = this._undo.bind(this);
@@ -44,20 +45,27 @@ export default class DashCanvas extends Component {
 
 
     componentDidMount() {
-    if (this.props.filename.length > 0){
+    if (this.props.filename.length > 0 ||
+	this.props.image_content.length > 0){
+	var content = (this.props.filename.length > 0) ? this.props.filename :
+		    this.props.image_content;
 	let sketch = this._sketch;
-	let opts = {left:0,
-		    top:0,
-		    scale:this.props.scale}
-	sketch.addImg(this.props.filename, opts);
+	var img = new Image();
+	img.onload = () => {
+	    var new_height = this.state.height;
+	    var new_scale = 1;
+	    var height = img.height;
+	    var width = img.width;
+	    new_height = Math.round(height * sketch.props.width / width);
+	    new_scale = new_height / height;
+	    this.setState({height:new_height});
+	    sketch.clear();
+	    let opts = {left:0,
+			top:0,
+			scale:new_scale}
+	    sketch.addImg(content, opts);
 	}
-    if (this.props.image_content.length > 0){
-	let sketch = this._sketch;
-	sketch.clear()
-	let opts = {left:0,
-		    top:0,
-		    scale:this.props.scale}
-	sketch.addImg(this.props.image_content, opts);
+	img.src = content;
 	}
     }
 
@@ -67,15 +75,27 @@ export default class DashCanvas extends Component {
     // Typical usage (don't forget to compare props):
     if (
 	(this.props.image_content !== prevProps.image_content)){
-	if (this.props.setProps){
-        let JSON_string = JSON.stringify(this._sketch.toJSON());
-	this.props.setProps({json_data: JSON_string});
+	var img = new Image();
+	var new_height = this.state.height;
+	var new_scale = 1;
+	img.onload = () => {
+	    var height = img.height;
+	    var width = img.width;
+	    new_height = Math.round(height * sketch.props.width / width);
+	    new_scale = new_height / height;
+	    this.setState({height:new_height});
+	    sketch.clear();
+	    let opts = {left:0,
+			top:0,
+			scale:new_scale}
+	    sketch.addImg(this.props.image_content, opts);
 	}
-	sketch.clear();
-	let opts = {left:0,
-	 	    top:0,
-	            scale:this.props.scale}
-	sketch.addImg(this.props.image_content, opts);
+	img.src = this.props.image_content;
+	if (this.props.setProps){
+	    let JSON_string = JSON.stringify(this._sketch.toJSON());
+	    this.props.setProps({json_data: JSON_string});
+	    }
+
 	sketch._fc.setZoom(this.props.zoom);
     };
     };
@@ -99,11 +119,9 @@ export default class DashCanvas extends Component {
     };
 
     _zoom_factor(factor){
-	console.log("called zoom");
 	this._sketch.zoom(factor);
 	let zoom_factor = this.props.zoom;
 	this.props.setProps({zoom: factor*zoom_factor})
-	console.log(this.props.zoom);
     };
 
 
@@ -144,7 +162,6 @@ export default class DashCanvas extends Component {
 
 
     render() {
-        console.log("rendered");
         var toolsArray = {};
         toolsArray["pencil"] = Tools.Pencil;
         toolsArray["pan"] = Tools.Pan;
@@ -158,14 +175,16 @@ export default class DashCanvas extends Component {
 	const show_pencil = !(hide_buttons.includes("pencil"));
 	const show_undo = !(hide_buttons.includes("undo"));
 	const show_select = !(hide_buttons.includes("select"));
+	var width_defined = this.props.width > 0;
+	var width = width_defined ? this.props.width : null;
         return (
 	    <div className={this.props.className}>
 	    <SketchField name='sketch'
 		ref={(c) => this._sketch = c}
                 tool={toolsArray[this.props.tool.toLowerCase()]}
                 lineColor={this.props.lineColor}
-		width={this.props.width}
-		height={this.props.height}
+		width={width}
+		height={this.state.height}
 		forceValue={true}
                 lineWidth={this.props.lineWidth}/>
 	    {show_zoom &&
