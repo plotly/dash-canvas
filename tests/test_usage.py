@@ -20,5 +20,5 @@ def test_install(cookies, dash_threaded, selenium):
     sys.path.insert(0, str(results.project))
 
     # Test that `usage.py` works after building the default component.
-    dash_threaded(import_app('index'))
+    dash_threaded(import_app('app'))
 
