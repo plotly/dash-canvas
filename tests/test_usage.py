@@ -2,12 +2,11 @@ import shutil
 import sys
 
 
-from pytest_dash.utils import (
-    import_app,
+from pytest_dash.wait_for import (
     wait_for_text_to_equal,
     wait_for_element_by_css_selector
 )
-
+from pytest_dash.application_runners import import_app
 
 def test_install(cookies, dash_threaded, selenium):
     results = cookies.bake(extra_context={
