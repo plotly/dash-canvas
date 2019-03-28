@@ -45,11 +45,11 @@ export default class DashCanvas extends Component {
 
 
     componentDidMount() {
+    let sketch = this._sketch;
     if (this.props.filename.length > 0 ||
 	this.props.image_content.length > 0){
 	var content = (this.props.filename.length > 0) ? this.props.filename :
 		    this.props.image_content;
-	let sketch = this._sketch;
 	var img = new Image();
 	img.onload = () => {
 	    var new_height = this.state.height;
@@ -66,6 +66,8 @@ export default class DashCanvas extends Component {
 	    sketch.addImg(content, opts);
 	}
 	img.src = content;
+	} else{
+    sketch._fc.setBackgroundColor(sketch.props.backgroundColor);
 	}
     }
 
@@ -186,6 +188,7 @@ export default class DashCanvas extends Component {
 		width={width}
 		height={this.state.height}
 		forceValue={true}
+		backgroundColor='#ccddff'
                 lineWidth={this.props.lineWidth}/>
 	    {show_zoom &&
 	    <button style={styles.button}
@@ -252,8 +255,8 @@ export default class DashCanvas extends Component {
 
 DashCanvas.defaultProps = {filename:'', label:'',
 			   json_data:'', image_content:'', trigger:0,
-			   width:500, height:500, scale:1, lineWidth:20,
-			   lineColor:'yellow', tool:"pencil", zoom:1,
+			   width:500, height:500, scale:1, lineWidth:10,
+			   lineColor:'red', tool:"pencil", zoom:1,
 			   goButtonTitle:'Save', hide_buttons:[]};
 
 DashCanvas.propTypes = {

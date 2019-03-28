@@ -164,7 +164,7 @@
         "required": false,
         "description": "Width of drawing line (in pencil mode)",
         "defaultValue": {
-          "value": "20",
+          "value": "10",
           "computed": false
         }
       },
@@ -175,7 +175,7 @@
         "required": false,
         "description": "Color of drawing line (in pencil mode). Can be a text string,\nlike 'yellow', 'red', or a color triplet like 'rgb(255, 0, 0)'.\nAlpha is possible with 'rgba(255, 0, 0, 0.5)'.",
         "defaultValue": {
-          "value": "'yellow'",
+          "value": "'red'",
           "computed": false
         }
       },
