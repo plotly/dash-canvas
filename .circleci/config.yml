@@ -58,7 +58,7 @@ jobs:
                   command: |
                       . venv/bin/activate
                       pip install -r tests/requirements.txt
-                      pytest tests --webdriver Chrome --driver Chrome
+                      pytest tests --webdriver Chrome
 
 
 
