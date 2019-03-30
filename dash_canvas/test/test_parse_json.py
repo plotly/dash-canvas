@@ -1,4 +1,4 @@
-from dash_canvas.utils.parse_json import parse_jsonfile
+from dash_canvas.utils import parse_jsonfile
 
 
 def test_parse_jsonfile():

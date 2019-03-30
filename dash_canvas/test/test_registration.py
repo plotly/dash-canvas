@@ -1,4 +1,4 @@
-from dash_canvas.utils.registration import register_tiles
+from dash_canvas.utils import register_tiles
 import numpy as np
 from skimage import data, color
 import matplotlib.pyplot as plt
