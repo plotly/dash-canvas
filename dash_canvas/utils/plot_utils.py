@@ -28,7 +28,7 @@ def image_with_contour(img, labels, shape=None):
         img = img_as_ubyte(color.gray2rgb(img))
         img = PIL.Image.fromarray(img)
     labels = labels.astype(np.float)
-    # Contour plot of segmentation
+    # Contour plot of segmentation
     cont = go.Contour(z=labels[::-1],
             contours=dict(coloring='lines'),
             line=dict(width=3),

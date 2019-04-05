@@ -27,9 +27,13 @@ def _indices_of_path(path, scale=1):
     """
     rr, cc = [], []
     for (Q1, Q2) in zip(path[:-2], path[1:-1]):
-        inds = draw.bezier_curve(round(Q1[-1] / scale), round(Q1[-2] / scale), 
-                                 round(Q2[2] / scale), round(Q2[1] / scale), 
-                                 round(Q2[4] / scale), round(Q2[3] / scale), 1)
+        # int(round()) is for Python 2 compatibility
+        inds = draw.bezier_curve(int(round(Q1[-1] / scale)), 
+                                 int(round(Q1[-2] / scale)), 
+                                 int(round(Q2[2] / scale)), 
+                                 int(round(Q2[1] / scale)), 
+                                 int(round(Q2[4] / scale)), 
+                                 int(round(Q2[3] / scale)), 1)
         rr += list(inds[0])
         cc += list(inds[1])
     return rr, cc

@@ -269,7 +269,7 @@ def segmentation_generic(img, mask, mode='watershed'):
         raise NotImplementedError
 
 
-## -------------------- Background removal ----------------------------
+# -------------------- Background removal ----------------------------
 
 
 def superpixel_color_segmentation(im, mask, mode='bbox', remove_holes='all',
