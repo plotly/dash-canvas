@@ -65,6 +65,13 @@
         "returns": null
       },
       {
+        "name": "_rectangletool",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
         "name": "_selecttool",
         "docblock": null,
         "modifiers": [],
@@ -79,17 +86,6 @@
         },
         "required": false,
         "description": "The ID used to identify this component in Dash callbacks"
-      },
-      "label": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": "A label that will be printed when this component is rendered.",
-        "defaultValue": {
-          "value": "''",
-          "computed": false
-        }
       },
       "image_content": {
         "type": {
@@ -151,7 +147,7 @@
           "name": "string"
         },
         "required": false,
-        "description": "Selection of drawing tool, among [\"pencil\", \"pan\", \"circle\",\n\"select\", \"line\"].",
+        "description": "Selection of drawing tool, among [\"pencil\", \"pan\", \"circle\",\n\"rectangle\", \"select\", \"line\"].",
         "defaultValue": {
           "value": "\"pencil\"",
           "computed": false
@@ -231,7 +227,7 @@
           }
         },
         "required": false,
-        "description": "Names of buttons to hide. Names are \"zoom\", \"pan\", \"line\", \"pencil\",\n\"undo\", \"select\".",
+        "description": "Names of buttons to hide. Names are \"zoom\", \"pan\", \"line\", \"pencil\",\n\"rectangle\", \"undo\", \"select\".",
         "defaultValue": {
           "value": "[]",
           "computed": false

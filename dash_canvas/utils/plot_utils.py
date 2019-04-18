@@ -2,9 +2,9 @@ import plotly.graph_objs as go
 import PIL
 import numpy as np
 from skimage import color, img_as_ubyte
+from plotly import colors
 
-
-def image_with_contour(img, labels, shape=None):
+def image_with_contour(img, labels, mode='lines', shape=None):
     """
     Figure with contour plot of labels superimposed on background image.
 
@@ -28,11 +28,19 @@ def image_with_contour(img, labels, shape=None):
         img = img_as_ubyte(color.gray2rgb(img))
         img = PIL.Image.fromarray(img)
     labels = labels.astype(np.float)
+    custom_viridis = colors.PLOTLY_SCALES['Viridis']
+    custom_viridis.insert(0, [0, '#FFFFFF'])
+    custom_viridis[1][0] = 1.e-4
     # Contour plot of segmentation
+    print('mode is', mode)
+    opacity = 0.4 if mode is None else 1
     cont = go.Contour(z=labels[::-1],
-            contours=dict(coloring='lines'),
-            line=dict(width=3),
+            contours=dict(start=0, end=labels.max() + 1, size=1,
+                          coloring=mode),
+            line=dict(width=1),
             showscale=False,
+            colorscale=custom_viridis,
+            opacity=opacity,
             )
     # Layout
     layout= go.Layout(
@@ -59,8 +67,8 @@ def image_with_contour(img, labels, shape=None):
                   showline=False,
                   scaleanchor="x",
                   ticks='',
-                  showticklabels=False,
-    ))
+                  showticklabels=False,),
+            margin=dict(b=5, t=20))
     fig = go.Figure(data=[cont], layout=layout)
     return fig
 
