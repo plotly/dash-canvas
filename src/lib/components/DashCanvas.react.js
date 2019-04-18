@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {SketchField, Tools} from 'react-sketch';
 import {ZoomMinusIcon, ZoomPlusIcon, EditIcon, PanIcon,
-	ArrowLeftIcon, PlotLineIcon, TagOutlineIcon} from 'plotly-icons';
+	ArrowLeftIcon, PlotLineIcon, SquareIcon, TagOutlineIcon} 
+	from 'plotly-icons';
 
 
 const styles = {
@@ -156,6 +157,12 @@ export default class DashCanvas extends Component {
 	};
 
 
+    _rectangletool(){
+	this.props.setProps({tool: "rectangle"});
+	};
+
+
+
     _selecttool(){
 	this.props.setProps({tool: "select"});
 	};
@@ -170,6 +177,7 @@ export default class DashCanvas extends Component {
         toolsArray["line"] = Tools.Line;
         toolsArray["circle"] = Tools.Circle;
         toolsArray["select"] = Tools.Select;
+        toolsArray["rectangle"] = Tools.Rectangle;
 	const hide_buttons = this.props.hide_buttons;
 	const show_line = !(hide_buttons.includes("line"));
 	const show_pan = !(hide_buttons.includes("pan"));
@@ -177,6 +185,7 @@ export default class DashCanvas extends Component {
 	const show_pencil = !(hide_buttons.includes("pencil"));
 	const show_undo = !(hide_buttons.includes("undo"));
 	const show_select = !(hide_buttons.includes("select"));
+	const show_rectangle = !(hide_buttons.includes("rectangle"));
 	var width_defined = this.props.width > 0;
 	var width = width_defined ? this.props.width : null;
         return (
@@ -218,6 +227,13 @@ export default class DashCanvas extends Component {
 		<PlotLineIcon/>
 	    </button>
 	    }
+	    {show_rectangle &&
+	    <button style={styles.button}
+		    title="Rectangle tool"
+		    onClick={(e) => this._rectangletool()}>
+		<SquareIcon/>
+	    </button>
+	    }
 	    {show_pan &&
 	    <button style={styles.button}
 		    title="Pan"
@@ -253,7 +269,7 @@ export default class DashCanvas extends Component {
 
 }
 
-DashCanvas.defaultProps = {filename:'', label:'',
+DashCanvas.defaultProps = {filename:'',
 			   json_data:'', image_content:'', trigger:0,
 			   width:500, height:500, scale:1, lineWidth:10,
 			   lineColor:'red', tool:"pencil", zoom:1,
@@ -264,11 +280,6 @@ DashCanvas.propTypes = {
      * The ID used to identify this component in Dash callbacks
      */
     id: PropTypes.string,
-
-    /**
-     * A label that will be printed when this component is rendered.
-     */
-    label: PropTypes.string.isRequired,
 
     /**
      * Image data string, formatted as png or jpg data string. Can be
@@ -299,7 +310,7 @@ DashCanvas.propTypes = {
  
     /**
      * Selection of drawing tool, among ["pencil", "pan", "circle",
-     * "select", "line"].
+     * "rectangle", "select", "line"].
      */
     tool: PropTypes.string,
  
@@ -342,7 +353,7 @@ DashCanvas.propTypes = {
 
     /**
      * Names of buttons to hide. Names are "zoom", "pan", "line", "pencil",
-     * "undo", "select".
+     * "rectangle", "undo", "select".
      */
     hide_buttons: PropTypes.arrayOf(PropTypes.string),
     

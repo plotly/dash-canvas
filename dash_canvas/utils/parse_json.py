@@ -113,6 +113,35 @@ def parse_jsonstring_line(string):
     return (np.array(props)).astype(np.int)
 
 
+def parse_jsonstring_rectangle(string):
+    """
+    Return geometry of rectangle objects.
+
+    Parameters
+    ----------
+
+    data : str
+        JSON string of data
+
+    """
+    try:
+        data = json.loads(string)
+    except:
+        return None
+    scale = 1
+    props = []
+    for obj in data['objects']:
+        if obj['type'] == 'image':
+            scale = obj['scaleX']
+        elif obj['type'] == 'rect':
+            scale_factor = obj['scaleX'] / scale
+            props.append([scale_factor * obj['width'],
+                          scale_factor * obj['height'],
+                          scale_factor * obj['left'],
+                          scale_factor * obj['top']])
+    return (np.array(props)).astype(np.int)
+
+
 def parse_jsonfile(filename, shape=None):
     with open(filename, 'r') as fp:
         string = json.load(fp)
