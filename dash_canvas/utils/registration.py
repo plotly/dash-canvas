@@ -112,10 +112,22 @@ def register_tiles(imgs, n_rows, n_cols, overlap_global=None,
             except (KeyError, TypeError):
                 overlap = np.array([0, overlap_value])
             init_c += l_c
+            if overlap[0] < 0:
+                print("up")
+                row_start_1 = -(l_r + overlap[0])
+                row_end_1 = None
+                row_start_2 = None
+                row_end_2 = l_r + overlap[0]
+            else:
+                print("down")
+                row_start_1 = None
+                row_end_1= (l_r - overlap[0])
+                row_start_2 = -(l_r - overlap[0])
+                row_end_2 = None
             shift_horiz = feature.register_translation(
-                imgs[i_rows, j_cols, - (l_r - overlap[0]):, -overlap[1]:],
-                imgs[i_rows, j_cols + 1, : l_r - overlap[0], :overlap[1]])[0]
-            init_r += int(shift_horiz[0]) + overlap[0]
+                imgs[i_rows, j_cols, row_start_1:row_end_1, -overlap[1]:],
+                imgs[i_rows, j_cols + 1, row_start_2:row_end_2, :overlap[1]])[0]
+            init_r += int(shift_horiz[0]) - (overlap[0])
             init_c += int(shift_horiz[1]) - overlap[1]
             shifts[i_rows, j_cols + 1] = init_r, init_c
             # Fill canvas and weights

@@ -9,32 +9,52 @@ def test_stitching_one_row():
 
     n_rows = 1
     n_cols = im.shape[1] // l
-
-    init_i, init_j = 0, 0
+    top, left = 50, 0
+    init_i, init_j = top, left
 
     imgs = np.empty((n_rows, n_cols, l, l))
 
-    overlap_h = [5, 50]
+    overlap_h = [30, 50]
 
     i = 0
     for j in range(n_cols):
         sub_im = im[init_i:init_i + l, init_j:init_j + l]
         imgs[i, j] = sub_im
         init_j += l - overlap_h[1]
+        init_i += - overlap_h[0]
 
     stitch = register_tiles(imgs, n_rows, n_cols, overlap_global=0.2, pad=l//2)
-    delta = im[:l, :stitch.shape[1]].astype(np.float) - stitch.astype(np.float)
-    assert np.all(delta == 0)
+    real_top = min(top, top - overlap_h[0])
+    delta = im[real_top:real_top+stitch.shape[0], :stitch.shape[1]].astype(np.float) - stitch.astype(np.float)
+    assert np.all(delta[50:-50] == 0)
     stitch = register_tiles(imgs, n_rows, n_cols, overlap_global=0.2, pad=l//2,
                             blending=False)
-    delta = im[:l, :stitch.shape[1]].astype(np.float) - stitch.astype(np.float)
-    assert np.all(delta == 0)
+    delta = im[real_top:real_top+stitch.shape[0], :stitch.shape[1]].astype(np.float) - stitch.astype(np.float)
+    assert np.all(delta[50:-50] == 0)
 
     # local_overlap
     stitch = register_tiles(imgs, n_rows, n_cols, overlap_global=0.5, pad=l//2,
-                            overlap_local={(0, 1):[0, 45]})
-    delta = im[:l, :stitch.shape[1]].astype(np.float) - stitch.astype(np.float)
-    assert np.all(delta == 0)
+                            overlap_local={(0, 1):[20, 45]})
+    delta = im[real_top:stitch.shape[0]+real_top, :stitch.shape[1]].astype(np.float) - stitch.astype(np.float)
+    assert np.all(delta[50:-50] == 0)
+
+    imgs = np.empty((n_rows, n_cols, l, l))
+
+    overlap_h = [-30, 50]
+    real_top = min(top, top - overlap_h[0])
+    init_i, init_j = top, left
+
+    i = 0
+    for j in range(n_cols):
+        sub_im = im[init_i:init_i + l, init_j:init_j + l]
+        imgs[i, j] = sub_im
+        init_j += l - overlap_h[1]
+        init_i += -overlap_h[0]
+
+    stitch = register_tiles(imgs, n_rows, n_cols, overlap_global=0.5, pad=l//2,
+                            overlap_local={(0, 1):[-20, 45]})
+    delta = im[real_top:stitch.shape[0]+real_top, :stitch.shape[1]].astype(np.float) - stitch.astype(np.float)
+    assert np.all(delta[50:-50] == 0)
 
 
 def test_stitching_two_rows():
