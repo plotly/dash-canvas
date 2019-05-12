@@ -1,0 +1,15 @@
+Package: dashCanvas
+Title: Sketching pad for dash based on react-sketch
+Version: 0.0.10
+Authors @R: as.person(c(Emmanuelle Gouillart <emmanuelle.gouillart@nsup.org>))
+Description: Sketching pad for dash based on react-sketch
+Depends: R (>= 3.0.2)
+Imports: dashR
+Suggests: testthat, roxygen2
+License: MIT + file LICENSE
+URL: https://github.com/plotly/dash-canvas
+BugReports: https://github.com/plotly/dash-canvas/issues
+Encoding: UTF-8
+LazyData: true
+Author: Emmanuelle Gouillart [aut]
+Maintainer: Emmanuelle Gouillart <emmanuelle.gouillart@nsup.org>
