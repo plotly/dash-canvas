@@ -1,0 +1,4 @@
+pkg_help_description: >
+    Dash Canvas is a module for image annotation and image processing using Dash. It provides both the DashCanvas object for drawing and annotations on images, and a set of utility functions to process images using the annotations.    
+pkg_help_title: >
+    Interactive Image Annotation and Processing Component for Dash
