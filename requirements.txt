@@ -1,5 +1,5 @@
 # dash is required to call `build:py`
-dash
+dash[testing]
 numpy
 scipy
 scikit-image
