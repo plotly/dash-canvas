@@ -18,6 +18,13 @@
         "returns": null
       },
       {
+        "name": "_redo",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
         "name": "_zoom_factor",
         "docblock": null,
         "modifiers": [],

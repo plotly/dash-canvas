@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {SketchField, Tools} from 'react-sketch';
 import {ZoomMinusIcon, ZoomPlusIcon, EditIcon, PanIcon,
-	ArrowLeftIcon, PlotLineIcon, SquareIcon, TagOutlineIcon} 
+	ArrowLeftIcon, ArrowRightIcon, PlotLineIcon, SquareIcon, TagOutlineIcon}
 	from 'plotly-icons';
 
 
@@ -119,6 +119,14 @@ export default class DashCanvas extends Component {
             canUndo: this._sketch.canUndo(),
             canRedo: this._sketch.canRedo()
         })
+	};
+	_redo(){
+		this._sketch.redo();
+		console.log(this._sketch);
+        this.setState({
+            canUndo: this._sketch.canUndo(),
+            canRedo: this._sketch.canRedo()
+        })
     };
 
     _zoom_factor(factor){
@@ -133,7 +141,7 @@ export default class DashCanvas extends Component {
 	let zoom_factor = this.props.zoom;
 	this.props.setProps({zoom: 1.25*zoom_factor})
     };
-   
+
 
     _unzoom(){
 	this._sketch.zoom(0.8);
@@ -247,6 +255,13 @@ export default class DashCanvas extends Component {
 		    onClick={(e) => this._undo()}>
 		<ArrowLeftIcon/>
 	    </button>
+		}
+		{show_undo &&
+	    <button style={styles.button}
+		    title="Redo"
+		    onClick={(e) => this._redo()}>
+		<ArrowRightIcon/>
+	    </button>
 	    }
 	    {show_select &&
 	    <button style={styles.button}
@@ -255,10 +270,11 @@ export default class DashCanvas extends Component {
 		<TagOutlineIcon/>
 	    </button>
 	    }
-	
-	    <button style={styles.textbutton} 
-		    onClick={(e) => this._save()}> 
-		    {this.props.goButtonTitle} 
+
+		<button style={styles.textbutton}
+		    title="Save"
+		    onClick={(e) => this._save()}>
+		    {this.props.goButtonTitle}
 	    </button>
 
 	    </div>
