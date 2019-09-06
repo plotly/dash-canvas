@@ -16,7 +16,7 @@ Dash component.
 ``src/lib/components/DashCanvas.react.js``. If you are not familiar with
 React and JavaScript, [this
 tutorial](https://dash.plot.ly/react-for-python-developers) is a good
-primer. In order to build the Javascript component: excecute at the root
+primer. In order to build the Javascript component: execute at the root
 of the package
 
 ```
