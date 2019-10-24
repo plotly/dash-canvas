@@ -3,11 +3,11 @@
     "version": "0.0.11",
     "description": "Sketching pad for dash based on react-sketch",
     "repository": {
-      "type": "git",
-      "url": "git@github.com:plotly/dash-canvas.git"
+        "type": "git",
+        "url": "git@github.com:plotly/dash-canvas.git"
     },
     "bugs": {
-      "url": "https://github.com/plotly/dash-canvas/issues"
+        "url": "https://github.com/plotly/dash-canvas/issues"
     },
     "homepage": "https://github.com/plotly/dash-canvas",
     "main": "build/index.js",
@@ -32,9 +32,15 @@
         "plotly-icons": ">=1.0"
     },
     "devDependencies": {
-        "babel-core": "^6.26.3",
+        "@babel/cli": "^7.6.2",
+        "@babel/core": "^7.6.2",
+        "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+        "@babel/polyfill": "^7.6.0",
+        "@babel/preset-env": "^7.6.2",
+        "@babel/preset-react": "^7.0.0",
+        "@plotly/webpack-dash-dynamic-import": "^1.0.0",
         "babel-eslint": "^8.2.3",
-        "babel-loader": "^7.1.4",
+        "babel-loader": "^8.0.6",
         "copyfiles": "^2.0.0",
         "babel-preset-env": "^1.7.0",
         "babel-preset-react": "^6.24.1",
@@ -45,11 +51,11 @@
         "eslint-plugin-react": "^7.9.1",
         "npm": "^6.1.0",
         "flexboxgrid": "^6.3.1",
-        "react-docgen": "^2.20.1",
+        "react-docgen": "^4.1.1",
         "react-dropzone": "4.2.7",
         "style-loader": "^0.21.0",
-        "webpack": "^4.20.2",
-        "webpack-cli": "^3.1.1",
+        "webpack": "^4.41.0",
+        "webpack-cli": "^3.3.9",
         "webpack-serve": "^1.0.2"
     },
     "peerDependencies": {
