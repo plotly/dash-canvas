@@ -287,8 +287,6 @@ export default class DashCanvas extends Component {
 
 		)
 	}
-
-
 }
 
 DashCanvas.defaultProps = defaultProps;
