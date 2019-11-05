@@ -1,6 +1,6 @@
 {
     "name": "dash_canvas",
-    "version": "0.0.11",
+    "version": "0.1.0",
     "description": "Sketching pad for dash based on react-sketch",
     "repository": {
         "type": "git",
