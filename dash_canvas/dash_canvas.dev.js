@@ -187,15 +187,25 @@ window["dash_canvas"] =
 /******/
 /******/ 	// on error function for async loading
 /******/ 	__webpack_require__.oe = function(err) { console.error(err); throw err; };
+/******/ 	const getCurrentScript = function() {
+/******/ 	    let script = document.currentScript;
+/******/ 	    if (!script) {
+/******/ 	        /* Shim for IE11 and below */
+/******/ 	        /* Do not take into account async scripts and inline scripts */
+/******/ 	        const scripts = Array.from(document.getElementsByTagName('script')).filter(function(s) { return !s.async && !s.text && !s.textContent; });
+/******/ 	        script = scripts.slice(-1)[0];
+/******/ 	    }
+/******/
+/******/ 	    return script;
+/******/ 	};
+/******/
+/******/ 	const isLocalScript = function(script) {
+/******/ 	    return /\/_dash-component-suites\//.test(script.src);
+/******/ 	};
+/******/
 /******/ 	Object.defineProperty(__webpack_require__, 'p', {
 /******/ 	    get: (function () {
-/******/ 	        let script = document.currentScript;
-/******/ 	        if (!script) {
-/******/ 	            /* Shim for IE11 and below */
-/******/ 	            /* Do not take into account async scripts and inline scripts */
-/******/ 	            const scripts = Array.from(document.getElementsByTagName('script')).filter(function(s) { return !s.async && !s.text && !s.textContent; });
-/******/ 	            script = scripts.slice(-1)[0];
-/******/ 	        }
+/******/ 	        let script = getCurrentScript();
 /******/
 /******/ 	        var url = script.src.split('/').slice(0, -1).join('/') + '/';
 /******/
@@ -204,6 +214,27 @@ window["dash_canvas"] =
 /******/ 	        };
 /******/ 	    })()
 /******/ 	});
+/******/
+/******/ 	const __jsonpScriptSrc__ = jsonpScriptSrc;
+/******/ 	jsonpScriptSrc = function(chunkId) {
+/******/ 	    let script = getCurrentScript();
+/******/ 	    let isLocal = isLocalScript(script);
+/******/
+/******/ 	    let src = __jsonpScriptSrc__(chunkId);
+/******/
+/******/ 	    if(!isLocal) {
+/******/ 	        return src;
+/******/ 	    }
+/******/
+/******/ 	    const srcFragments = src.split('/');
+/******/ 	    const fileFragments = srcFragments.slice(-1)[0].split('.');
+/******/
+/******/ 	    fileFragments.splice(1, 0, "v0_1_0m1572987741");
+/******/ 	    srcFragments.splice(-1, 1, fileFragments.join('.'))
+/******/
+/******/ 	    return srcFragments.join('/');
+/******/ 	};
+/******/
 /******/
 /******/ 	var jsonpArray = window["webpackJsonpdash_canvas"] = window["webpackJsonpdash_canvas"] || [];
 /******/ 	var oldJsonpFunction = jsonpArray.push.bind(jsonpArray);
