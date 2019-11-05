@@ -1,7 +1,7 @@
 version: 2
 
 jobs:
-    'python-3.6': 
+    'python-3.6':
         docker:
             - image: circleci/python:3.6-stretch-node-browsers
               environment:
@@ -52,13 +52,13 @@ jobs:
                   command: |
                       . venv/bin/activate
                       pytest dash_canvas
-            
+
             - run:
                   name: Run usage tests
                   command: |
                       . venv/bin/activate
                       pip install -r tests/requirements.txt
-                      pytest tests --webdriver Chrome
+                      pytest tests
 
 
 
