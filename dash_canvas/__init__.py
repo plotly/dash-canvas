@@ -36,6 +36,7 @@ _js_dist = []
 
 _js_dist.extend([{
         'relative_package_path': 'async~{}.js'.format(async_resource),
+        'dev_package_path': 'async~{}.dev.js'.format(async_resource),
         'external_url': (
             'https://unpkg.com/dash-canvas@{}'
             '/dash_canvas/async~{}.js'
