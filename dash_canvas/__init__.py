@@ -44,16 +44,6 @@ _js_dist.extend([{
         'async': True
     } for async_resource in async_resources])
 
-_js_dist.extend([{
-        'relative_package_path': 'async~{}.js.map'.format(async_resource),
-        'external_url': (
-            'https://unpkg.com/dash-canvas@{}'
-            '/dash_canvas/async~{}.js.map'
-        ).format(__version__, async_resource),
-        'namespace': 'dash_canvas',
-        'dynamic': True
-    } for async_resource in async_resources])
-
 _js_dist.extend([
     {
         'relative_package_path': 'dash_canvas.min.js',
