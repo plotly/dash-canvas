@@ -19,6 +19,6 @@ setup(
     include_package_data=True,
     license=package['license'],
     description=package['description'] if 'description' in package else package_name,
-    install_requires=['dash', 'dash-html-components', 'scikit-image', 'Pillow',
+    install_requires=['dash>=1.6.0', 'dash-html-components', 'scikit-image', 'Pillow',
                        'scikit-learn', 'plotly', 'dash-core-components']
 )
