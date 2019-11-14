@@ -14,11 +14,10 @@
     "scripts": {
         "start": "webpack-serve ./webpack.serve.config.js --open",
         "validate-init": "python _validate_init.py",
-        "prepublish": "npm run validate-init",
         "build:js-dev": "webpack --mode development",
         "build:js": "webpack --mode production",
         "build:py": "node ./extract-meta.js src/lib/components > dash_canvas/metadata.json && copyfiles package.json dash_canvas && python -c \"import dash; dash.development.component_loader.generate_classes('dash_canvas', 'dash_canvas/metadata.json')\"",
-        "build:all": "npm run build:js && npm run build:js-dev && npm run build:py",
+        "build:all": "npm run build:js && npm run build:js-dev && npm run build:py && npm run validate-init",
         "postbuild:all": "es-check es5 dash_canvas/*.js"
     },
     "author": "Emmanuelle Gouillart <emmanuelle.gouillart@nsup.org>",
@@ -38,7 +37,7 @@
         "@babel/plugin-syntax-dynamic-import": "^7.2.0",
         "@babel/preset-env": "^7.6.2",
         "@babel/preset-react": "^7.0.0",
-        "@plotly/webpack-dash-dynamic-import": "^1.1.3-rc1",
+        "@plotly/webpack-dash-dynamic-import": "^1.1.4",
         "babel-eslint": "^8.2.3",
         "babel-loader": "^8.0.6",
         "babel-preset-env": "^1.7.0",
