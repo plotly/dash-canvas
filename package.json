@@ -17,8 +17,8 @@
         "build:js-dev": "webpack --mode development",
         "build:js": "webpack --mode production",
         "build:py": "node ./extract-meta.js src/lib/components > dash_canvas/metadata.json && copyfiles package.json dash_canvas && python -c \"import dash; dash.development.component_loader.generate_classes('dash_canvas', 'dash_canvas/metadata.json')\"",
-        "build:all": "npm run build:js && npm run build:js-dev && npm run build:py && npm run validate-init",
-        "postbuild:all": "es-check es5 dash_canvas/*.js"
+        "build": "npm run build:js && npm run build:js-dev && npm run build:py && npm run validate-init",
+        "postbuild": "es-check es5 dash_canvas/*.js"
     },
     "author": "Emmanuelle Gouillart <emmanuelle.gouillart@nsup.org>",
     "license": "MIT",
