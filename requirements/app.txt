@@ -1,8 +1,5 @@
 # dash is required to call `build:py`
-dash
-dash-html-components
-dash-core-components
-dash-renderer
+dash>=1.6.1
 plotly
 numpy
 scikit-image
