@@ -1,11 +1,11 @@
 Package: dashCanvas
 Title: Sketching pad for dash based on react-sketch
-Version: 0.0.10
+Version: 0.1.0
 Authors @R: as.person(c(Emmanuelle Gouillart <emmanuelle.gouillart@nsup.org>))
 Description: Sketching pad for dash based on react-sketch
-Depends: R (>= 3.0.2)
-Imports: dash
-Suggests: testthat, roxygen2
+Depends: R (>= 3.0.2), dash
+Imports: 
+Suggests: 
 License: MIT + file LICENSE
 URL: https://github.com/plotly/dash-canvas
 BugReports: https://github.com/plotly/dash-canvas/issues
