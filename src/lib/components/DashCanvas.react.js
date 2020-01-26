@@ -23,7 +23,7 @@ DashCanvas.defaultProps = {
     json_data: '', image_content: '', trigger: 0,
     width: 500, height: 500, scale: 1, lineWidth: 10,
     lineColor: 'red', tool: "pencil", zoom: 1,
-    goButtonTitle: 'Save', hide_buttons: [],json_objects=''
+    goButtonTitle: 'Save', hide_buttons: [],json_objects: ''
 };
 
 DashCanvas.propTypes = {
