@@ -7,7 +7,7 @@ annotations for various image processing tasks.
 
 Try out the 
 [gallery of examples](https://dash-canvas.plotly.host/Portal/) and [read
-the doc](https://dash.plot.ly/canvas) to learn how to use dash-canvas.
+the docs](https://dash.plot.ly/canvas) to learn how to use dash-canvas.
 
 <p style="text-align:center;"><img src="doc/segmentation.gif" alt="Segmentation app" width="65%"></p>
 
