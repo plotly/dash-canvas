@@ -48,6 +48,7 @@ export default class DashCanvas extends Component {
 
 
 	componentDidMount() {
+		console.log("Mounting props");
 		let sketch = this._sketch;
 		if (this.props.filename.length > 0 ||
 			this.props.image_content.length > 0) {
@@ -78,6 +79,8 @@ export default class DashCanvas extends Component {
 
 
 	componentDidUpdate(prevProps) {
+		console.log("Update props");
+		console.log(this.props)
 		let sketch = this._sketch;
 		// Typical usage (don't forget to compare props):
 		if (
@@ -109,10 +112,23 @@ export default class DashCanvas extends Component {
 		};
 
 		if ((this.props.json_objects !== prevProps.json_objects)) {
-			this._sketch.fromJSON({
+			if (this.props.add_only){
+			    this._sketch.fromJSON(
+			    {
 				'objects':sketch.toJSON().objects.concat(JSON.parse(this.props.json_objects)) 
-			});
-		};			
+			    });
+		    } else {
+			    this._sketch.fromJSON(
+				this.props.json_objects);
+			};
+		    if (!(this.props.filename.length > 0 ||
+			    this.props.image_content.length > 0)) {
+			    console.log("Setting color");
+			    sketch._fc.setBackgroundColor(sketch.props.backgroundColor, () => sketch._fc.renderAll());
+			};
+		};
+
+
 	};
 
 
@@ -208,6 +224,7 @@ export default class DashCanvas extends Component {
 		const show_rectangle = !(hide_buttons.includes("rectangle"));
 		var width_defined = this.props.width > 0;
 		var width = width_defined ? this.props.width : null;
+		console.log("Rendering");
 		return (
 			<div className={this.props.className}>
 				<SketchField name='sketch'

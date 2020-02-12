@@ -23,7 +23,8 @@ DashCanvas.defaultProps = {
     json_data: '', image_content: '', trigger: 0,
     width: 500, height: 500, scale: 1, lineWidth: 10,
     lineColor: 'red', tool: "pencil", zoom: 1,
-    goButtonTitle: 'Save', hide_buttons: [],json_objects: ''
+    goButtonTitle: 'Save', hide_buttons: [],json_objects: '',
+    add_only:false
 };
 
 DashCanvas.propTypes = {
@@ -109,17 +110,26 @@ DashCanvas.propTypes = {
     hide_buttons: PropTypes.arrayOf(PropTypes.string),
 
     /**
-     * Dash-assigned callback that should be called whenever any of the
-     * properties change
-     */
-    setProps: PropTypes.func,
-
+     * Like json_data,add objects like paths or images
+     * Use utils.parse_json.parse_jsonstring to parse
+     * this string.
+     */   
+    json_objects: PropTypes.string,
+    
     /**
      * Like json_data,add objects like paths or images
      * Use utils.parse_json.parse_jsonstring to parse
      * this string.
      */   
-    json_objects: PropTypes.string    
+    add_only: PropTypes.bool,
+    
+    /**
+     * Dash-assigned callback that should be called whenever any of the
+     * properties change
+     */
+    setProps: PropTypes.func,
+
+    
 };
 
 export const propTypes = DashCanvas.propTypes;
