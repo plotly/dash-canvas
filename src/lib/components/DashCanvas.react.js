@@ -21,7 +21,7 @@ export default class DashCanvas extends Component {
 DashCanvas.defaultProps = {
     filename: '',
     json_data: '', image_content: '', trigger: 0,
-    width: 500, height: 500, scale: 1, lineWidth: 10,
+    width: 0, height: 0, lineWidth: 10,
     lineColor: 'red', tool: "pencil", zoom: 1,
     goButtonTitle: 'Save', hide_buttons: []
 };
@@ -45,19 +45,17 @@ DashCanvas.propTypes = {
 
 
     /**
-     * Width of the canvas
+     * Width of the canvas. The width of the parent element is used if width is
+     * not passed.
      */
     width: PropTypes.number,
 
 	/**
-	* Height of the canvas
+	* Height of the canvas. If height is not given and a background image
+	* is passed, the height adapts to keep the aspect ratio of the 
+	* background image.
 	*/
     height: PropTypes.number,
-
-    /**
-     * Scaling ratio between canvas width and image width
-     */
-    scale: PropTypes.number,
 
     /**
      * Selection of drawing tool, among ["pencil", "pan", "circle",
