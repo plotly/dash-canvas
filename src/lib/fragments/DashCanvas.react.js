@@ -124,7 +124,7 @@ export default class DashCanvas extends Component {
 		    if (!(this.props.filename.length > 0 ||
 			    this.props.image_content.length > 0)) {
 			    console.log("Setting color");
-			    sketch._fc.setBackgroundColor(sketch.props.backgroundColor, () => sketch._fc.renderAll());
+			    sketch._fc.setBackgroundColor(sketch.props.backgroundColor);
 			};
 		};
 
