@@ -157,6 +157,28 @@
           "computed": false
         }
       },
+      "json_objects": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "Like json_data,add objects like paths or images\nUse utils.parse_json.parse_jsonstring to parse\nthis string.",
+        "defaultValue": {
+          "value": "''",
+          "computed": false
+        }
+      },
+      "add_only": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Like json_data,add objects like paths or images\nUse utils.parse_json.parse_jsonstring to parse\nthis string.",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
       "setProps": {
         "type": {
           "name": "func"

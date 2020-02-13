@@ -30,14 +30,20 @@ Alpha is possible with 'rgba(255, 0, 0, 0.5)'.
 annotations. Use utils.parse_json.parse_jsonstring to parse
 this string.
 - hide_buttons (list of strings; optional): Names of buttons to hide. Names are "zoom", "pan", "line", "pencil",
-"rectangle", "undo", "select"."""
+"rectangle", "undo", "select".
+- json_objects (string; default ''): Like json_data,add objects like paths or images
+Use utils.parse_json.parse_jsonstring to parse
+this string.
+- add_only (boolean; default False): Like json_data,add objects like paths or images
+Use utils.parse_json.parse_jsonstring to parse
+this string."""
     @_explicitize_args
-    def __init__(self, id=Component.UNDEFINED, image_content=Component.UNDEFINED, zoom=Component.UNDEFINED, width=Component.UNDEFINED, height=Component.UNDEFINED, scale=Component.UNDEFINED, tool=Component.UNDEFINED, lineWidth=Component.UNDEFINED, lineColor=Component.UNDEFINED, goButtonTitle=Component.UNDEFINED, filename=Component.UNDEFINED, trigger=Component.UNDEFINED, json_data=Component.UNDEFINED, hide_buttons=Component.UNDEFINED, **kwargs):
-        self._prop_names = ['id', 'image_content', 'zoom', 'width', 'height', 'scale', 'tool', 'lineWidth', 'lineColor', 'goButtonTitle', 'filename', 'trigger', 'json_data', 'hide_buttons']
+    def __init__(self, id=Component.UNDEFINED, image_content=Component.UNDEFINED, zoom=Component.UNDEFINED, width=Component.UNDEFINED, height=Component.UNDEFINED, scale=Component.UNDEFINED, tool=Component.UNDEFINED, lineWidth=Component.UNDEFINED, lineColor=Component.UNDEFINED, goButtonTitle=Component.UNDEFINED, filename=Component.UNDEFINED, trigger=Component.UNDEFINED, json_data=Component.UNDEFINED, hide_buttons=Component.UNDEFINED, json_objects=Component.UNDEFINED, add_only=Component.UNDEFINED, **kwargs):
+        self._prop_names = ['id', 'image_content', 'zoom', 'width', 'height', 'scale', 'tool', 'lineWidth', 'lineColor', 'goButtonTitle', 'filename', 'trigger', 'json_data', 'hide_buttons', 'json_objects', 'add_only']
         self._type = 'DashCanvas'
         self._namespace = 'dash_canvas'
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['id', 'image_content', 'zoom', 'width', 'height', 'scale', 'tool', 'lineWidth', 'lineColor', 'goButtonTitle', 'filename', 'trigger', 'json_data', 'hide_buttons']
+        self.available_properties = ['id', 'image_content', 'zoom', 'width', 'height', 'scale', 'tool', 'lineWidth', 'lineColor', 'goButtonTitle', 'filename', 'trigger', 'json_data', 'hide_buttons', 'json_objects', 'add_only']
         self.available_wildcard_properties =            []
 
         _explicit_args = kwargs.pop('_explicit_args')

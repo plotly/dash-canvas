@@ -107,6 +107,20 @@ export default class DashCanvas extends Component {
 
 			sketch._fc.setZoom(this.props.zoom);
 		};
+
+		if ((this.props.json_objects !== prevProps.json_objects)) {
+			if (this.props.add_only){
+			    this._sketch.fromJSON(
+			    {
+				'objects':sketch.toJSON().objects.concat(JSON.parse(this.props.json_objects)) 
+			    });
+		    } else {
+			    this._sketch.fromJSON(
+				this.props.json_objects);
+			};
+		};
+
+
 	};
 
 
@@ -128,7 +142,6 @@ export default class DashCanvas extends Component {
 	};
 	_redo() {
 		this._sketch.redo();
-		console.log(this._sketch);
 		this.setState({
 			canUndo: this._sketch.canUndo(),
 			canRedo: this._sketch.canRedo()
