@@ -33,7 +33,8 @@ export default class DashCanvas extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			height: 200
+			height: 200,
+			width: 200
 		};
 		this._save = this._save.bind(this);
 		this._undo = this._undo.bind(this);
@@ -44,11 +45,21 @@ export default class DashCanvas extends Component {
 		this._penciltool = this._penciltool.bind(this);
 		this._linetool = this._linetool.bind(this);
 		this._selecttool = this._selecttool.bind(this);
+	     this.canvasRef = React.createRef();
 	}
 
 
 	componentDidMount() {
 		let sketch = this._sketch;
+		if (this.props.width == 0) {
+		    this.setState({width: this.canvasRef.current.clientWidth});
+		} else{
+		    this.setState({width: this.props.width});
+		}
+
+		// Control resize - does not work at the moment
+		window.addEventListener('resize', this._resize, false);
+		
 		if (this.props.filename.length > 0 ||
 			this.props.image_content.length > 0) {
 			var content = (this.props.filename.length > 0) ? this.props.filename :
@@ -59,7 +70,7 @@ export default class DashCanvas extends Component {
 				var new_scale = 1;
 				var height = img.height;
 				var width = img.width;
-				new_height = Math.round(height * sketch.props.width / width);
+				new_height = Math.round(height * this.state.width / width);
 				new_scale = new_height / height;
 				this.setState({ height: new_height });
 				sketch.clear();
@@ -88,7 +99,7 @@ export default class DashCanvas extends Component {
 			img.onload = () => {
 				var height = img.height;
 				var width = img.width;
-				new_height = Math.round(height * sketch.props.width / width);
+				new_height = Math.round(height * sketch.state.width / width);
 				new_scale = new_height / height;
 				this.setState({ height: new_height });
 				sketch.clear();
@@ -118,6 +129,10 @@ export default class DashCanvas extends Component {
 		}
 	};
 
+	_resize() {
+	    // not used yet
+	    this.setState({width: this.canvasRef.current.clientWidth});
+	};
 
 	_undo() {
 		this._sketch.undo();
@@ -128,7 +143,6 @@ export default class DashCanvas extends Component {
 	};
 	_redo() {
 		this._sketch.redo();
-		console.log(this._sketch);
 		this.setState({
 			canUndo: this._sketch.canUndo(),
 			canRedo: this._sketch.canRedo()
@@ -201,15 +215,17 @@ export default class DashCanvas extends Component {
 		const show_select = !(hide_buttons.includes("select"));
 		const show_rectangle = !(hide_buttons.includes("rectangle"));
 		var width_defined = this.props.width > 0;
-		var width = width_defined ? this.props.width : null;
+		var width = width_defined ? this.props.width : this.state.width;
+		var height_defined = this.props.height > 0;
+		var height = height_defined ? this.props.height : this.state.height;
 		return (
-			<div className={this.props.className}>
+			<div className={this.props.className} ref={this.canvasRef}>
 				<SketchField name='sketch'
 					ref={(c) => this._sketch = c}
 					tool={toolsArray[this.props.tool.toLowerCase()]}
 					lineColor={this.props.lineColor}
 					width={width}
-					height={this.state.height}
+					height={height}
 					forceValue={true}
 					backgroundColor='#ccddff'
 					lineWidth={this.props.lineWidth} />

@@ -38,9 +38,9 @@
           "name": "number"
         },
         "required": false,
-        "description": "Width of the canvas",
+        "description": "Width of the canvas. The width of the parent element is used if width is\nnot passed.",
         "defaultValue": {
-          "value": "500",
+          "value": "0",
           "computed": false
         }
       },
@@ -49,20 +49,9 @@
           "name": "number"
         },
         "required": false,
-        "description": "Height of the canvas",
+        "description": "Height of the canvas. If height is not given and a background image\nis passed, the height adapts to keep the aspect ratio of the \nbackground image.",
         "defaultValue": {
-          "value": "500",
-          "computed": false
-        }
-      },
-      "scale": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": "Scaling ratio between canvas width and image width",
-        "defaultValue": {
-          "value": "1",
+          "value": "0",
           "computed": false
         }
       },
