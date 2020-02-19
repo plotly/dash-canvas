@@ -1,13 +1,13 @@
 # dash-canvas
 
 dash-canvas is a package for image processing with 
-[Dash](https://dash.plot.ly/). It provides a Dash component for
+[Dash](https://dash.plotly.com/). It provides a Dash component for
 annotating images, as well as utility functions for using such
 annotations for various image processing tasks. 
 
 Try out the 
 [gallery of examples](https://dash-canvas.plotly.host/Portal/) and [read
-the docs](https://dash.plot.ly/canvas) to learn how to use dash-canvas.
+the docs](https://dash.plotly.com/canvas) to learn how to use dash-canvas.
 
 <p style="text-align:center;"><img src="doc/segmentation.gif" alt="Segmentation app" width="65%"></p>
 
