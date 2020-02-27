@@ -1,4 +1,4 @@
-(window["webpackJsonpdash_canvas"] = window["webpackJsonpdash_canvas"] || []).push([["async~canvas"],{
+(window["webpackJsonpdash_canvas"] = window["webpackJsonpdash_canvas"] || []).push([["async-canvas"],{
 
 /***/ "./node_modules/mdi-react/AccountIcon.js":
 /*!***********************************************!*\
