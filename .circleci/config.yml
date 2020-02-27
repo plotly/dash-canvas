@@ -3,7 +3,7 @@ version: 2
 jobs:
     'python-3.6':
         docker:
-            - image: circleci/python:3.6-stretch-node-browsers
+            - image: circleci/python:3.6.9-stretch-node-browsers
               environment:
                   PYTHON_VERSION: py36
                   PERCY_ENABLE: 0
