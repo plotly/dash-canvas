@@ -8,8 +8,6 @@ jobs:
                   PYTHON_VERSION: py36
                   PERCY_ENABLE: 0
 
-
-
         steps:
             - checkout
 
@@ -22,30 +20,27 @@ jobs:
                   command: echo $CIRCLE_JOB > circlejob.txt
 
             - restore_cache:
-                  key: deps1-{{ .Branch }}-{{ checksum "requirements/package.txt" }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}-{{ checksum ".circleci/config.yml" }}-{{ checksum "circlejob.txt" }}
+                  key: deps1-{{ .Branch }}-{{ checksum "requirements/package.txt" }}-{{ checksum "package-lock.json" }}-{{ checksum ".circleci/config.yml" }}-{{ checksum "circlejob.txt" }}
 
             - run:
                   name: Install dependencies
                   command: |
-                      sudo pip install virtualenv --upgrade
                       . venv/bin/activate
-                      pip install -r requirements/package.txt
+                      pip install --progress-bar off -r requirements/package.txt
                       npm ci
 
             - save_cache:
-                  key: deps1-{{ .Branch }}-{{ checksum "requirements/package.txt" }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}-{{ checksum ".circleci/config.yml" }}-{{ checksum "circlejob.txt" }}
+                  key: deps1-{{ .Branch }}-{{ checksum "requirements/package.txt" }}-{{ checksum "package-lock.json" }}-{{ checksum ".circleci/config.yml" }}-{{ checksum "circlejob.txt" }}
                   paths:
                       - 'venv'
                       - 'node_modules'
-
 
             - run:
                   name: Build
                   command: |
                       . venv/bin/activate
-                      npm run build:js
-                      npm run build:py
-                      python3 setup.py develop
+                      npm run build
+                      python setup.py develop
 
             - run:
                   name: Run tests
@@ -57,7 +52,6 @@ jobs:
                   name: Run usage tests
                   command: |
                       . venv/bin/activate
-                      pip install -r tests/requirements.txt
                       pytest tests
 
 
