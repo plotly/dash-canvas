@@ -23,13 +23,12 @@
     "author": "Emmanuelle Gouillart <emmanuelle.gouillart@nsup.org>",
     "license": "MIT",
     "dependencies": {
-        "ramda": "^0.25.0",
-        "react": "15.4.2",
-        "react-dom": "15.4.2",
-        "react-sketch": ">=0.4.4",
         "material-ui": "^0.20.0",
-        "react-color": "^2.13.8",
-        "plotly-icons": ">=1.0"
+        "plotly-icons": ">=1.0",
+        "react": "16.13.0",
+        "react-color": "^2.18.0",
+        "react-dom": "16.13.0",
+        "react-sketch": ">=0.4.4"
     },
     "devDependencies": {
         "@babel/cli": "^7.6.2",
