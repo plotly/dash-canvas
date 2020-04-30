@@ -25,6 +25,24 @@ const styles = {
 	}
 };
 
+class DashCanvasErrorBoundary extends Component {
+	constructor(props) {
+		super(props);
+	}
+
+	static getDerivedStateFromError() {
+
+	}
+
+	componentDidCatch() {
+
+	}
+
+	render() {
+		return this.props.children;
+	}
+}
+
 /**
  * Canvas component for drawing on a background image and selecting
  * regions.
@@ -48,65 +66,81 @@ export default class DashCanvas extends Component {
 
 
 	componentDidMount() {
-		let sketch = this._sketch;
-		if (this.props.filename.length > 0 ||
-			this.props.image_content.length > 0) {
-			var content = (this.props.filename.length > 0) ? this.props.filename :
-				this.props.image_content;
-			var img = new Image();
-			img.onload = () => {
-				var new_height = this.state.height;
-				var new_scale = 1;
-				var height = img.height;
-				var width = img.width;
-				new_height = Math.round(height * sketch.props.width / width);
-				new_scale = new_height / height;
-				this.setState({ height: new_height });
-				sketch.clear();
-				let opts = {
-					left: 0,
-					top: 0,
-					scale: new_scale
-				}
-				sketch.addImg(content, opts);
+		try {
+			let sketch = this._sketch;
+			if (!sketch) {
+				return;
 			}
-			img.src = content;
-		} else {
-			sketch._fc.setBackgroundColor(sketch.props.backgroundColor);
+
+			if (this.props.filename.length > 0 ||
+				this.props.image_content.length > 0) {
+				var content = (this.props.filename.length > 0) ? this.props.filename :
+					this.props.image_content;
+				var img = new Image();
+				img.onload = () => {
+					var new_height = this.state.height;
+					var new_scale = 1;
+					var height = img.height;
+					var width = img.width;
+					new_height = Math.round(height * sketch.props.width / width);
+					new_scale = new_height / height;
+					this.setState({ height: new_height });
+					sketch.clear();
+					let opts = {
+						left: 0,
+						top: 0,
+						scale: new_scale
+					}
+					sketch.addImg(content, opts);
+				}
+				img.src = content;
+			} else {
+				sketch._fc.setBackgroundColor(sketch.props.backgroundColor);
+			}
+		} catch (err) {
+			// swallow
 		}
 	}
 
 
 	componentDidUpdate(prevProps) {
-		let sketch = this._sketch;
-		// Typical usage (don't forget to compare props):
-		if (
-			(this.props.image_content !== prevProps.image_content)) {
-			var img = new Image();
-			var new_height = this.state.height;
-			var new_scale = 1;
-			img.onload = () => {
-				var height = img.height;
-				var width = img.width;
-				new_height = Math.round(height * sketch.props.width / width);
-				new_scale = new_height / height;
-				this.setState({ height: new_height });
-				sketch.clear();
-				let opts = {
-					left: 0,
-					top: 0,
-					scale: new_scale
-				}
-				sketch.addImg(this.props.image_content, opts);
-			}
-			img.src = this.props.image_content;
-			if (this.props.setProps) {
-				let JSON_string = JSON.stringify(this._sketch.toJSON());
-				this.props.setProps({ json_data: JSON_string });
+		try {
+			let sketch = this._sketch;
+			if (!sketch) {
+				return;
 			}
 
-			sketch._fc.setZoom(this.props.zoom);
-		};
+			// Typical usage (don't forget to compare props):
+			if (
+				(this.props.image_content !== prevProps.image_content)) {
+				var img = new Image();
+				var new_height = this.state.height;
+				var new_scale = 1;
+				img.onload = () => {
+					var height = img.height;
+					var width = img.width;
+					new_height = Math.round(height * sketch.props.width / width);
+					new_scale = new_height / height;
+					this.setState({ height: new_height });
+					sketch.clear();
+					let opts = {
+						left: 0,
+						top: 0,
+						scale: new_scale
+					}
+					sketch.addImg(this.props.image_content, opts);
+				}
+				img.src = this.props.image_content;
+				if (this.props.setProps) {
+					let JSON_string = JSON.stringify(this._sketch.toJSON());
+					this.props.setProps({ json_data: JSON_string });
+				}
+
+				sketch._fc.setZoom(this.props.zoom);
+			};
+		} catch (err) {
+			// swallow
+		}
 	};
 
 
@@ -202,7 +236,7 @@ export default class DashCanvas extends Component {
 		const show_rectangle = !(hide_buttons.includes("rectangle"));
 		var width_defined = this.props.width > 0;
 		var width = width_defined ? this.props.width : null;
-		return (
+		return (<DashCanvasErrorBoundary>
 			<div className={this.props.className}>
 				<SketchField name='sketch'
 					ref={(c) => this._sketch = c}
@@ -284,8 +318,7 @@ export default class DashCanvas extends Component {
 				</button>
 
 			</div>
-
-		)
+		</DashCanvasErrorBoundary>);
 	}
 }
 
