@@ -72,7 +72,10 @@ def parse_jsonstring(string, shape=None, scale=1):
             scale = obj['scaleX']
         elif obj['type'] == 'path':
             scale_obj = obj['scaleX']
-            inds = _indices_of_path(obj['path'], scale=scale / scale_obj)
+            inds = np.array(_indices_of_path(obj['path'], scale=scale / scale_obj))
+            # Clip indices outside of image boundaries
+            inds = inds[:, np.all(inds >=0, axis=0)]
+            inds = inds[:, np.logical_and(inds[0] < shape[0], inds[1] < shape[1])]
             radius = round(obj['strokeWidth'] / 2. / scale)
             mask_tmp = np.zeros(shape, dtype=np.bool)
             mask_tmp[inds[0], inds[1]] = 1
