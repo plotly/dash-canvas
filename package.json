@@ -28,7 +28,7 @@
         "react": "16.13.0",
         "react-color": "^2.18.0",
         "react-dom": "16.13.0",
-        "react-sketch": ">=0.4.4"
+        "react-sketch": ">=0.5.1"
     },
     "devDependencies": {
         "@babel/cli": "^7.6.2",
