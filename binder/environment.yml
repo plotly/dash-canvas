@@ -1,0 +1,20 @@
+name: dash_canvas
+channels:
+  - plotly
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.6
+  - numpy
+  - pandas
+  - matplotlib
+  - nbserverproxy
+  - appmode
+  - scikit-learn
+  - scikit-image
+  - notebook
+  - dash==0.39.0  # The core dash backend
+  - plotly==3.7.1  # Plotly graphing library used in examples
+  - dash-daq==0.1.0  # DAQ components (newly open-sourced!)
+  - pip:
+    - dash-canvas

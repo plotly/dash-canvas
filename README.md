@@ -1,4 +1,4 @@
-# dash-canvas
+# dash-canvas [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/plotly/dash-canvas/master?urlpath=apps%2Fbinder%2Fcorrect_segmentation.ipynb)
 
 <div align="center">
   <a href="https://dash.plotly.com/project-maintenance">
