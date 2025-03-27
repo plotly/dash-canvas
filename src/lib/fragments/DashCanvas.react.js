@@ -107,6 +107,12 @@ export default class DashCanvas extends Component {
 
 			sketch._fc.setZoom(this.props.zoom);
 		};
+
+		if ((this.props.json_objects !== prevProps.json_objects)) {
+			this._sketch.fromJSON({
+				'objects':sketch.toJSON().objects.concat(JSON.parse(this.props.json_objects)) 
+			});
+		};			
 	};
 
 
